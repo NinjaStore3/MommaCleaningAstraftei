@@ -13,11 +13,11 @@ const allAreas = site.areas.groups.flatMap((g) => g.items);
 <section class="section section--sand" id="epikoinonia" aria-labelledby="contact-title">
   <div class="wrap contact">
     <div class="contact__intro">
-      <p class="eyebrow">Κλείσε ραντεβού</p>
-      <h2 id="contact-title">Πες μου τι χρειάζεσαι</h2>
+      <p class="eyebrow">Ραντεβού</p>
+      <h2 id="contact-title">Κλείστε ραντεβού</h2>
       <p class="lead">
-        Γράψε μου εδώ και σε παίρνω τηλέφωνο. Ή πάρε με εσύ. Αν δεν το σηκώσω, είμαι σε δουλειά· θα σε πάρω μόλις
-        τελειώσω.
+        Τηλεφωνήστε μου ή συμπληρώστε τη φόρμα και στείλτε τη με WhatsApp, Viber ή email. Αν δεν απαντήσω, βρίσκομαι σε
+        δουλειά και θα σας καλέσω μόλις τελειώσω.
       </p>
 
       <div class="direct">
@@ -30,7 +30,7 @@ const allAreas = site.areas.groups.flatMap((g) => g.items);
             <a class="direct__item" href={links.viber()}>
               <Icon name="viber" />
               <span>
-                <span class="direct__label">Viber</span>Στείλε μήνυμα
+                <span class="direct__label">Viber</span>Στείλτε μήνυμα
               </span>
             </a>
           )
@@ -40,7 +40,7 @@ const allAreas = site.areas.groups.flatMap((g) => g.items);
             <a class="direct__item" href={links.whatsapp()} target="_blank" rel="noopener">
               <Icon name="whatsapp" />
               <span>
-                <span class="direct__label">WhatsApp</span>Στείλε μήνυμα
+                <span class="direct__label">WhatsApp</span>Στείλτε μήνυμα
               </span>
             </a>
           )
@@ -60,20 +60,13 @@ const allAreas = site.areas.groups.flatMap((g) => g.items);
       <p class="contact__hours"><Icon name="clock" /> {site.contact.hours}</p>
     </div>
 
+    <!-- No server: the form builds a message and opens WhatsApp, Viber or email with it filled in. -->
     <form
       class="booking"
-      method="POST"
-      action={site.form.endpoint}
       data-booking
       data-services={JSON.stringify(Object.fromEntries(serviceOptions.map((o) => [o.id, o.name])))}
-      data-ready={String(!/^\[.*\]$/.test(site.form.accessKey))}
+      novalidate
     >
-      <input type="hidden" name="access_key" value={site.form.accessKey} />
-      <input type="hidden" name="subject" value="Νέο ραντεβού από το site" />
-      <input type="hidden" name="from_name" value={site.name} />
-      <!-- Spam trap: real people never see or tick this. -->
-      <input type="checkbox" name="botcheck" class="booking__trap" tabindex="-1" autocomplete="off" aria-hidden="true" />
-
       <div class="field">
         <label for="b-name">Όνομα</label>
         <input id="b-name" name="name" type="text" autocomplete="name" required />
@@ -90,27 +83,49 @@ const allAreas = site.areas.groups.flatMap((g) => g.items);
         </datalist>
       </div>
       <div class="field">
-        <label for="b-service">Τι χρειάζεσαι</label>
+        <label for="b-service">Υπηρεσία</label>
         <select id="b-service" name="service">
           {serviceOptions.map((o) => <option value={o.name}>{o.name}</option>)}
-          <option value="Δεν ξέρω ακόμα">Δεν ξέρω ακόμα</option>
+          <option value="Δεν είμαι σίγουρος/η">Δεν είμαι σίγουρος/η</option>
         </select>
       </div>
       <div class="field field--wide">
-        <label for="b-day">Ποια μέρα σε βολεύει;</label>
-        <input id="b-day" name="day" type="text" placeholder="π.χ. Τρίτη πρωί ή όποια μέρα" />
+        <label for="b-day">Ποια μέρα σας εξυπηρετεί;</label>
+        <input id="b-day" name="day" type="text" placeholder="π.χ. Τρίτη πρωί" />
       </div>
       <div class="field field--wide">
-        <label for="b-msg">Κάτι άλλο που πρέπει να ξέρω; <span class="field__opt">(προαιρετικό)</span></label>
-        <textarea id="b-msg" name="message" rows="4" placeholder="Τετραγωνικά, μπάνια, κατοικίδια, ό,τι θες"></textarea>
+        <label for="b-msg">Σχόλια <span class="field__opt">(προαιρετικά)</span></label>
+        <textarea id="b-msg" name="message" rows="4" placeholder="Τετραγωνικά, μπάνια, κατοικίδια κ.λπ."></textarea>
       </div>
 
       <div class="booking__foot field--wide">
-        <button class="btn" type="submit" data-submit>
-          Στείλε <Icon name="arrow" />
-        </button>
+        <p class="booking__send-label">Αποστολή μέσω:</p>
+        <div class="booking__send">
+          {
+            site.contact.whatsapp && (
+              <button class="btn" type="submit" data-via="whatsapp">
+                <Icon name="whatsapp" /> WhatsApp
+              </button>
+            )
+          }
+          {
+            site.contact.viber && (
+              <button class="btn btn--green" type="submit" data-via="viber">
+                <Icon name="viber" /> Viber
+              </button>
+            )
+          }
+          {
+            hasEmail && (
+              <button class="btn btn--ghost" type="submit" data-via="email">
+                <Icon name="mail" /> Email
+              </button>
+            )
+          }
+        </div>
         <p class="small muted">
-          Τα στοιχεία σου τα χρησιμοποιώ μόνο για να σου απαντήσω. <a href="/politiki-aporritou/">Πολιτική απορρήτου</a>
+          Η φόρμα δεν αποθηκεύει τα στοιχεία σας. Ανοίγει έτοιμο μήνυμα στην εφαρμογή που επιλέγετε.
+          <a href="/politiki-aporritou/">Πολιτική απορρήτου</a>
         </p>
       </div>
       <p class="booking__status field--wide" data-status role="status" hidden></p>
@@ -119,45 +134,52 @@ const allAreas = site.areas.groups.flatMap((g) => g.items);
 </section>
 
 <script>
+  import { links } from '../../lib/site';
+
   const form = document.querySelector<HTMLFormElement>('[data-booking]');
   if (form) {
     const status = form.querySelector<HTMLElement>('[data-status]')!;
-    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
-    const fallback =
-      'Δεν έφυγε το μήνυμα. Πάρε με τηλέφωνο ή στείλε μου στο Viber/WhatsApp, θα σου απαντήσω σίγουρα.';
-
-    const show = (text: string, kind: 'ok' | 'error') => {
+    const show = (text: string) => {
       status.textContent = text;
-      status.dataset.kind = kind;
       status.hidden = false;
     };
 
-    form.addEventListener('submit', async (e) => {
+    const compose = () => {
+      const f = new FormData(form);
+      const v = (k: string) => String(f.get(k) ?? '').trim();
+      return [
+        'Γεια σας! Θα ήθελα ραντεβού για καθαρισμό.',
+        `- Όνομα: ${v('name')}`,
+        `- Τηλέφωνο: ${v('phone')}`,
+        `- Περιοχή: ${v('area')}`,
+        `- Υπηρεσία: ${v('service')}`,
+        v('day') && `- Μέρα: ${v('day')}`,
+        v('message') && `- Σχόλια: ${v('message')}`,
+      ]
+        .filter(Boolean)
+        .join('\n');
+    };
+
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!form.reportValidity()) return;
-      if (form.dataset.ready !== 'true') {
-        show('Η φόρμα δεν έχει ρυθμιστεί ακόμα. ' + fallback.replace('Δεν έφυγε το μήνυμα. ', ''), 'error');
-        return;
-      }
-      submit.disabled = true;
-      try {
-        const res = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify(Object.fromEntries(new FormData(form))),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) throw new Error(data.message || res.statusText);
-        form.reset();
-        show('Το πήρα! Θα σε πάρω τηλέφωνο σύντομα.', 'ok');
-      } catch {
-        show(fallback, 'error');
-      } finally {
-        submit.disabled = false;
+      const via = ((e as SubmitEvent).submitter as HTMLElement | null)?.dataset.via ?? 'whatsapp';
+      const text = compose();
+      if (via === 'whatsapp') {
+        window.open(links.whatsapp(text), '_blank', 'noopener');
+        show('Ανοίγει το WhatsApp με το μήνυμά σας. Πατήστε «Αποστολή» εκεί για να το στείλετε.');
+      } else if (via === 'viber') {
+        // Viber doesn't always prefill text, so copy it too.
+        navigator.clipboard?.writeText(text).catch(() => {});
+        window.location.href = links.viber(text);
+        show('Ανοίγει το Viber. Αν το μήνυμα δεν εμφανιστεί, έχει αντιγραφεί: κάντε επικόλληση και αποστολή.');
+      } else {
+        window.location.href = links.mail('Ραντεβού για καθαρισμό', text);
+        show('Ανοίγει το email σας με το μήνυμα έτοιμο. Πατήστε «Αποστολή» εκεί.');
       }
     });
 
-    // Filled in from the cost estimator ("Με τη φόρμα").
+    // Filled in from the cost estimator ("Στη φόρμα").
     window.addEventListener('estimate:use', (e) => {
       const { service, summary } = (e as CustomEvent).detail ?? {};
       const select = form.querySelector<HTMLSelectElement>('#b-service')!;
@@ -235,10 +257,6 @@ const allAreas = site.areas.groups.flatMap((g) => g.items);
     border-radius: var(--radius);
     padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
   }
-  .booking__trap {
-    position: absolute;
-    left: -9999px;
-  }
   .field {
     display: grid;
     gap: 0.4rem;
@@ -293,20 +311,28 @@ const allAreas = site.areas.groups.flatMap((g) => g.items);
   .booking__foot {
     display: grid;
     gap: 0.75rem;
-    justify-items: start;
+    padding-top: 0.25rem;
+  }
+  .booking__send-label {
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .booking__send {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  @media (max-width: 479px) {
+    .booking__send {
+      display: grid;
+    }
   }
   .booking__status {
     padding: 0.85rem 1rem;
     border-radius: var(--radius-sm);
     font-weight: 500;
-  }
-  .booking__status[data-kind='ok'] {
     background: var(--green-tint);
     color: var(--green-deep);
-  }
-  .booking__status[data-kind='error'] {
-    background: #f6e7dc;
-    color: var(--terracotta-deep);
   }
 
   @media (min-width: 640px) {

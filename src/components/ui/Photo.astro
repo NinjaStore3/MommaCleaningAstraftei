@@ -2,24 +2,22 @@
 /**
  * A photo slot. Drop a file named `<name>.jpg` (or .jpeg/.png/.webp) into src/assets/photos/
  * and it appears here, converted to AVIF/WebP at the right sizes.
- * Until then, a tinted placeholder with a caption shows what the photo should be.
+ * Until then, the `fallback` slot (a branded panel) is shown instead.
  */
 import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import Icon from './Icon.astro';
+import Glint from './Glint.astro';
 
 interface Props {
   name: string;
   alt: string;
-  /** What the photo should show (placeholder caption). */
-  caption: string;
   shape?: 'arch' | 'rect';
   sizes?: string;
   class?: string;
   loading?: 'eager' | 'lazy';
 }
 
-const { name, alt, caption, shape = 'rect', sizes = '(min-width: 900px) 40vw, 100vw', class: className, loading = 'lazy' } =
+const { name, alt, shape = 'rect', sizes = '(min-width: 900px) 40vw, 100vw', class: className, loading = 'lazy' } =
   Astro.props;
 
 const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/photos/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG}', {
@@ -27,6 +25,7 @@ const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/photos/*
 });
 const match = Object.entries(files).find(([path]) => path.split('/').pop()!.replace(/\.[^.]+$/, '') === name);
 const img = match?.[1].default;
+const hasFallback = Astro.slots.has('fallback');
 ---
 
 <figure class:list={['photo', shape === 'arch' && 'photo--arch', className]}>
@@ -41,12 +40,11 @@ const img = match?.[1].default;
         loading={loading}
         fetchpriority={loading === 'eager' ? 'high' : undefined}
       />
+    ) : hasFallback ? (
+      <slot name="fallback" />
     ) : (
-      <div class="photo-placeholder" role="img" aria-label={`Θέση για φωτογραφία: ${caption}`}>
-        <span>
-          <Icon name="camera" />
-          φωτογραφία: {caption}
-        </span>
+      <div class="photo-panel" aria-hidden="true">
+        <Glint class="photo-panel__glint" />
       </div>
     )
   }

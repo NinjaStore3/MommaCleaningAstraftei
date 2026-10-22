@@ -2,6 +2,8 @@
 import Icon from '../ui/Icon.astro';
 import Photo from '../ui/Photo.astro';
 import { site } from '../../lib/site';
+
+const years = new Date().getFullYear() - site.owner.since;
 ---
 
 <section class="section" id="gia-mena" aria-labelledby="about-title">
@@ -10,30 +12,37 @@ import { site } from '../../lib/site';
       name="owner"
       shape="arch"
       alt={`Η ${site.owner.firstName}`}
-      caption={`η ${site.owner.firstName}, φυσική, όχι στημένη`}
       sizes="(min-width: 900px) 30vw, 80vw"
       class="about__photo"
-    />
+    >
+      <div slot="fallback" class="photo-panel photo-panel--light about__panel">
+        <p class="about__years">{years}</p>
+        <p class="about__years-label">χρόνια εμπειρίας</p>
+        <p class="about__years-since">από το {site.owner.since}</p>
+      </div>
+    </Photo>
     <div class="about__text">
-      <p class="eyebrow">Λίγα λόγια για μένα</p>
-      <h2 id="about-title">Γεια σου, είμαι η {site.owner.firstName}.</h2>
-      <!-- Placeholder text: rewrite it in her own words (see OWNER-TODO.md). -->
+      <p class="eyebrow">Ποια είμαι</p>
+      <h2 id="about-title">Καθαρίζω σπίτια από το {site.owner.since}.</h2>
       <div class="about__body">
         <p>
-          Καθαρίζω σπίτια από το {site.owner.since}. Δουλεύω μόνη μου, οπότε στο σπίτι σου έρχεται πάντα ο ίδιος
-          άνθρωπος: εγώ.
+          Είμαι η {site.owner.firstName}. Σε {years} χρόνια δουλειάς έχω μάθει ότι η διαφορά φαίνεται στις λεπτομέρειες:
+          στις γωνίες, στους αρμούς των πλακακιών, στα σημεία που δεν κοιτάζει κανείς.
         </p>
         <p>
-          Καθαρίζω όπως θα ήθελα να καθαρίσουν το δικό μου σπίτι. Προσέχω τα πράγματά σου, δεν βιάζομαι και δεν αφήνω
-          γωνίες.
+          Δουλεύω μόνη μου και αναλαμβάνω έως δύο σπίτια τη μέρα, ώστε κάθε σπίτι να έχει τον χρόνο που χρειάζεται. Στο
+          σπίτι σας έρχομαι πάντα εγώ, όχι κάθε φορά άλλο συνεργείο.
         </p>
-        <p>Αν κάτι δεν σου αρέσει, μου το λες και το ξαναπιάνω. Τόσο απλά.</p>
+        <p>
+          Συμφωνούμε από πριν τι θα γίνει και πόσο κοστίζει. Αν κάτι δεν είναι όπως το θέλετε, μου το λέτε και το
+          διορθώνω.
+        </p>
       </div>
-      <p class="about__sign">— {site.owner.firstName}</p>
+      <p class="about__sign">{site.owner.firstName}</p>
       <ul class="about__facts" role="list">
-        <li><Icon name="pin" /><span>Μένω {site.areas.base}</span></li>
+        <li><Icon name="pin" /><span>Μένω {site.areas.base} και καλύπτω όλη την Αθήνα</span></li>
         <li><Icon name="clock" /><span>{site.contact.hours}</span></li>
-        <li><Icon name="calendar" /><span>Το πολύ δύο σπίτια τη μέρα, για να μη βιάζομαι σε κανένα.</span></li>
+        <li><Icon name="receipt" /><span>Απόδειξη σε κάθε επίσκεψη</span></li>
       </ul>
     </div>
   </div>
@@ -51,6 +60,28 @@ import { site } from '../../lib/site';
     width: 100%;
     margin: 0;
     justify-self: center;
+  }
+  .about__panel {
+    gap: 0.25rem;
+  }
+  .about__years {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(5rem, 4rem + 4vw, 7.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+  .about__years-label {
+    font-family: var(--serif);
+    font-size: 1.375rem;
+  }
+  .about__years-since {
+    margin-top: 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--terracotta);
   }
   .about__text {
     display: grid;

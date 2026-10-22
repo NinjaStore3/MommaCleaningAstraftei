@@ -22,8 +22,8 @@ const first = services.standard;
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Υπολογισμός κόστους</p>
-      <h2 id="est-title">Δες πόσο θα σου κοστίσει</h2>
-      <p>Διάλεξε τι θες και η τιμή βγαίνει αμέσως. Μετά μου τη στέλνεις με ένα πάτημα.</p>
+      <h2 id="est-title">Υπολογίστε το κόστος</h2>
+      <p>Επιλέξτε τι χρειάζεστε και δείτε αμέσως την τιμή. Στη συνέχεια μου τη στέλνετε με ένα πάτημα.</p>
     </div>
 
     <form class="est" data-estimator novalidate>
@@ -34,7 +34,7 @@ const first = services.standard;
 
       <div class="est__fields">
         <fieldset class="est__group">
-          <legend><span class="est__n">1</span>Τι χρειάζεσαι;</legend>
+          <legend><span class="est__n">1</span>Τι χρειάζεστε;</legend>
           <div class="opts opts--cards">
             {
               choices.map((id, i) => (
@@ -49,7 +49,7 @@ const first = services.standard;
             }
           </div>
           <p class="est__hint">
-            Μετά από ανακαίνιση; Εκεί πρέπει πρώτα να έρθω να το δω. <a href="#epikoinonia">Πες μου</a>.
+            Μετά από ανακαίνιση; Η τιμή δίνεται μετά από αυτοψία. <a href="#epikoinonia">Επικοινωνήστε μαζί μου</a>.
           </p>
         </fieldset>
 
@@ -85,18 +85,18 @@ const first = services.standard;
                     <span class="opt__title">{p.name}</span>
                     <span class="opt__meta">
                       {pct(p.discount)}
-                      {p.recommended && ' · προτείνω'}
+                      {p.recommended && ' · προτείνεται'}
                     </span>
                   </span>
                 </label>
               ))
             }
           </div>
-          <p class="est__hint" data-freq-note hidden>Τα μηνιαία προγράμματα είναι για τον κανονικό καθαρισμό.</p>
+          <p class="est__hint" data-freq-note hidden>Τα μηνιαία προγράμματα αφορούν τον κανονικό καθαρισμό.</p>
         </fieldset>
 
         <fieldset class="est__group">
-          <legend><span class="est__n">4</span>Πρόσθετα <span class="est__opt">(αν θες)</span></legend>
+          <legend><span class="est__n">4</span>Πρόσθετα <span class="est__opt">(προαιρετικά)</span></legend>
           <div class="addon-list">
             {
               addons.map((a) => (
@@ -144,14 +144,14 @@ const first = services.standard;
           <legend><span class="est__n">5</span>Υλικά</legend>
           <label class="addon__main addon__main--solo">
             <input type="checkbox" name="ownMaterials" value="1" />
-            <span class="addon__name">Να δουλέψω με τα δικά σου προϊόντα</span>
+            <span class="addon__name">Με δικά σας προϊόντα καθαρισμού</span>
             <span class="addon__price">−{euro(policies.ownMaterialsDiscount)}</span>
           </label>
         </fieldset>
       </div>
 
       <aside class="est__sum" aria-labelledby="est-sum-title">
-        <p class="est__sum-label" id="est-sum-title">Η εκτίμησή σου</p>
+        <p class="est__sum-label" id="est-sum-title">Η εκτίμησή σας</p>
         <p class="est__total" aria-live="polite" aria-atomic="true">
           <span class="price" data-out="visit">{euro(first.prices.s)}</span>
           <span class="est__unit" data-out="unit">την επίσκεψη</span>
@@ -164,11 +164,11 @@ const first = services.standard;
         <ul class="est__lines" data-out="lines" role="list"></ul>
         <p class="est__warn" data-out="warn" hidden></p>
         <p class="est__fine">
-          Είναι εκτίμηση. Την τελική τιμή την κλείνουμε όταν μιλήσουμε, πριν ξεκινήσω, και δεν αλλάζει μετά.
+          Η τιμή είναι ενδεικτική. Την οριστικοποιούμε μαζί πριν ξεκινήσω και δεν αλλάζει μετά.
         </p>
 
         <div class="est__send">
-          <p class="est__send-label">Στείλ' το μου:</p>
+          <p class="est__send-label">Στείλτε μου την εκτίμηση:</p>
           <a class="btn btn--green btn--block" data-send="viber" href="#">
             <Icon name="viber" /> Viber
           </a>
@@ -182,9 +182,9 @@ const first = services.standard;
               </a>
             )
           }
-          <a class="btn btn--ghost btn--block" data-send="form" href="#epikoinonia">Με τη φόρμα</a>
+          <a class="btn btn--ghost btn--block" data-send="form" href="#epikoinonia">Στη φόρμα</a>
           <p class="est__copied small" data-out="copied" role="status" hidden>
-            Το μήνυμα αντιγράφηκε. Αν δεν εμφανιστεί στο Viber, κάνε επικόλληση.
+            Το μήνυμα αντιγράφηκε. Αν δεν εμφανιστεί στο Viber, κάντε επικόλληση.
           </p>
         </div>
       </aside>
@@ -275,9 +275,9 @@ const first = services.standard;
       let estimate: string;
 
       if (base == null) {
-        visitText = 'Θα σου πω';
-        unitText = 'μόλις μιλήσουμε';
-        if (extras) lines.push(`Τα πρόσθετα κάνουν ${euro(extras)}`);
+        visitText = 'Κατόπιν';
+        unitText = 'συνεννόησης';
+        if (extras) lines.push(`Σύνολο πρόσθετων: ${euro(extras)}`);
         estimate = 'τιμή κατόπιν συνεννόησης';
       } else {
         const visitBase = plan ? planPrice(base, plan.discount) : base;
@@ -287,7 +287,7 @@ const first = services.standard;
             ? `${svc.name}, ${plan.name.toLowerCase()}: ${euro(visitBase)} (αντί ${euro(base)})`
             : `${svc.name}: ${euro(base)}`,
         );
-        if (discount) lines.push(`Δικά σου προϊόντα: −${euro(discount)}`);
+        if (discount) lines.push(`Δικά σας προϊόντα: −${euro(discount)}`);
         visitText = euro(total);
         if (plan) {
           monthText = `${euro(total * plan.visitsPerMonth)} τον μήνα, ${plan.visitsPerMonth === 1 ? '1 επίσκεψη' : `${plan.visitsPerMonth} επισκέψεις`}`;
@@ -315,7 +315,7 @@ const first = services.standard;
       }
       const warn = out('warn');
       warn.hidden = !(hours && hours > 8);
-      warn.textContent = 'Είναι πάνω από μια μέρα δουλειά για έναν άνθρωπο. Μάλλον θα το χωρίσουμε σε δύο επισκέψεις.';
+      warn.textContent = 'Η δουλειά ξεπερνά τη μία μέρα. Θα τη χωρίσουμε σε δύο επισκέψεις.';
 
       // The message that goes to Viber / WhatsApp / email / the form.
       const what = plan ? `${svc.name}, ${plan.name.toLowerCase()}` : svc.name;
@@ -323,7 +323,7 @@ const first = services.standard;
         `- Τι: ${what}`,
         `- Σπίτι: ${sizeLabel}`,
         msgAddons.length ? `- Πρόσθετα: ${msgAddons.join(', ')}` : '',
-        s.own ? '- Υλικά: θα χρησιμοποιήσεις τα δικά μου' : '',
+        s.own ? '- Υλικά: θα χρησιμοποιήσετε τα δικά μου' : '',
         `- Εκτίμηση από το site: ${estimate}`,
       ].filter(Boolean);
       form.dataset.summary = summary.join('\n');

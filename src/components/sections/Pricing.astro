@@ -26,13 +26,13 @@ const price = (id: SizeId) => std.prices[id] as number;
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Τιμές</p>
-      <h2 id="pricing-title">Πόσο κάνει;</h2>
-      <p>Η τιμή βγαίνει από τα τετραγωνικά, όχι με την ώρα. Τα υλικά είναι μέσα στην τιμή.</p>
+      <h2 id="pricing-title">Πόσο κοστίζει;</h2>
+      <p>Η τιμή υπολογίζεται με βάση τα τετραγωνικά, όχι με την ώρα. Τα υλικά καθαρισμού περιλαμβάνονται.</p>
     </div>
 
     <div class="pricing">
       <fieldset class="seg">
-        <legend class="visually-hidden">Δείξε τιμές για</legend>
+        <legend class="visually-hidden">Εμφάνιση τιμών για</legend>
         <input type="radio" name="pricing-mode" id="pm-once" value="once" checked />
         <label for="pm-once">Μία φορά</label>
         <input type="radio" name="pricing-mode" id="pm-plan" value="plan" />
@@ -51,7 +51,7 @@ const price = (id: SizeId) => std.prices[id] as number;
                   {hoursLabel(std.hours[s.id] as number)}
                 </span>
                 <span class="band__plan">
-                  ή {euro(planPrice(price(s.id), bestPlan.discount))} αν έρχομαι {bestPlan.name.toLowerCase()}
+                  ή από {euro(planPrice(price(s.id), bestPlan.discount))} με μηνιαίο πρόγραμμα
                 </span>
               </li>
             ))
@@ -60,9 +60,9 @@ const price = (id: SizeId) => std.prices[id] as number;
             unpriced.map((s) => (
               <li class="band band--ask">
                 <span class="band__size">{s.label}</span>
-                <span class="band__ask">Πες μου για το σπίτι σου και σου λέω τιμή.</span>
+                <span class="band__ask">Περιγράψτε μου το σπίτι σας και σας δίνω τιμή.</span>
                 <a class="band__link" href="#epikoinonia">
-                  Ρώτα με <Icon name="arrow" />
+                  Ζητήστε τιμή <Icon name="arrow" />
                 </a>
               </li>
             ))
@@ -72,8 +72,8 @@ const price = (id: SizeId) => std.prices[id] as number;
 
       <div class="panel panel--plan">
         <p class="plan-intro">
-          Ίδια μέρα και ώρα, ο ίδιος άνθρωπος κάθε φορά. Χωρίς συμβόλαιο: σταματάς όποτε θες, αρκεί να μου το πεις μια
-          εβδομάδα πριν.
+          Σταθερή μέρα και ώρα, ο ίδιος άνθρωπος κάθε φορά. Χωρίς συμβόλαιο: μπορείτε να σταματήσετε όποτε θέλετε, με
+          ειδοποίηση μία εβδομάδα πριν.
         </p>
         <ul class="plans" role="list">
           {
@@ -119,19 +119,19 @@ const price = (id: SizeId) => std.prices[id] as number;
     <ul class="policies" role="list">
       <li>
         <Icon name="spray" />
-        <span>Τα υλικά τα φέρνω εγώ. Αν θες να δουλέψω με τα δικά σου, {euro(policies.ownMaterialsDiscount)} λιγότερα.</span>
+        <span>Τα υλικά τα φέρνω εγώ. Αν προτιμάτε τα δικά σας προϊόντα, η τιμή μειώνεται κατά {euro(policies.ownMaterialsDiscount)}.</span>
       </li>
       <li>
         <Icon name="card" />
-        <span>Πληρώνεις με {listOr(site.payment)}.</span>
+        <span>Πληρωμή με {listOr(site.payment)}.</span>
       </li>
       <li>
         <Icon name="receipt" />
-        <span>Κόβω απόδειξη κάθε φορά.</span>
+        <span>Απόδειξη σε κάθε επίσκεψη.</span>
       </li>
       <li>
         <Icon name="calendar" />
-        <span>Ακύρωση δωρεάν έως {policies.freeCancelHours} ώρες πριν.</span>
+        <span>Δωρεάν ακύρωση έως {policies.freeCancelHours} ώρες πριν.</span>
       </li>
     </ul>
   </div>

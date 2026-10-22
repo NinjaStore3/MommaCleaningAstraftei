@@ -69,10 +69,11 @@ On the site they're self-hosted as small Greek + Latin subsets (`public/fonts/`,
 
 ## Voice
 
-First person singular, talking to "εσύ". Everyday Athenian Greek, short sentences, specific facts over adjectives.
+Professional and warm. She speaks in the first person singular (one person, always the same one). Visitors are addressed politely in the plural (εσείς). Clear Greek, short sentences, specific facts over adjectives: 37 years, receipt every visit, price agreed before starting.
 
-- ✓ «Φέρνω τα δικά μου υλικά και έρχομαι πάντα εγώ, όχι συνεργείο.»
-- ✓ «Αν δεν το σηκώσω, είμαι σε δουλειά· θα σε πάρω μόλις τελειώσω.»
+- ✓ «Είμαι η Ευγενία και καθαρίζω σπίτια στην Αθήνα από το 1989. Στο σπίτι σας έρχομαι πάντα εγώ, με δικά μου υλικά.»
+- ✓ «Αν δεν απαντήσω, βρίσκομαι σε δουλειά και θα σας καλέσω μόλις τελειώσω.»
+- ✗ Slang or overly casual lines («χωρίς πολλά-πολλά», «ζωάκι»).
 - ✗ «Η εταιρεία μας δεσμεύεται να παρέχει υψηλής ποιότητας υπηρεσίες καθαρισμού.»
 - ✗ «Αξιοπιστία – Ποιότητα – Συνέπεια», «Ανακαλύψτε…», «Καλώς ήρθατε…»
 

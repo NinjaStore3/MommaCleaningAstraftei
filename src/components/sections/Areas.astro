@@ -6,8 +6,8 @@ import { site } from '../../lib/site';
   <div class="wrap areas">
     <div class="section-head">
       <p class="eyebrow">Περιοχές</p>
-      <h2 id="areas-title">Πού έρχομαι</h2>
-      <p>Μένω {site.areas.base} και κινούμαι κυρίως εδώ γύρω.</p>
+      <h2 id="areas-title">Όλη η Αθήνα</h2>
+      <p>{site.areas.intro} Ενδεικτικά:</p>
     </div>
     <div class="areas__groups">
       {
@@ -56,10 +56,15 @@ import { site } from '../../lib/site';
     max-width: 38rem;
     color: var(--ink-soft);
   }
-  @media (min-width: 800px) {
+  @media (min-width: 640px) {
     .areas__groups {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 2.5rem;
+    }
+  }
+  @media (min-width: 1000px) {
+    .areas__groups {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 </style>
