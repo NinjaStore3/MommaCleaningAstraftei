@@ -1,0 +1,78 @@
+---
+/**
+ * Hidden until there are real reviews.
+ * Turn on with "showTestimonials": true in src/data/site.json and add entries to src/data/testimonials.json:
+ *   { "name": "Μαρία", "area": "Παγκράτι", "text": "…" }
+ * Only real reviews, with the person's permission.
+ */
+import site from '../../data/site.json';
+import testimonials from '../../data/testimonials.json';
+
+type T = { name: string; area?: string; text: string };
+const items = testimonials as T[];
+const show = site.flags.showTestimonials && items.length > 0;
+---
+
+{
+  show && (
+    <section class="section section--rule" id="kritikes" aria-labelledby="reviews-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Τι λένε</p>
+          <h2 id="reviews-title">Από ανθρώπους που με έχουν σπίτι τους</h2>
+        </div>
+        <ul class="reviews" role="list">
+          {items.map((t) => (
+            <li class="review">
+              <blockquote>
+                <p>«{t.text}»</p>
+              </blockquote>
+              <p class="review__who">
+                {t.name}
+                {t.area && <span>, {t.area}</span>}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .reviews {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+  .review {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    display: grid;
+    gap: 1rem;
+    align-content: space-between;
+  }
+  .review blockquote {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+  .review__who {
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .review__who span {
+    font-weight: 400;
+    color: var(--ink-soft);
+  }
+  @media (min-width: 900px) {
+    .reviews {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

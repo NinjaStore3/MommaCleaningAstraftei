@@ -1,0 +1,329 @@
+---
+/**
+ * Printable A5 flyer for building entrances and the neighbourhood.
+ * Prices, phone and URL come from src/data/. Open /flyer/ and print (A5, no margins),
+ * or run `npm run flyer` to get flyer/astraftei-flyer-a5.pdf.
+ */
+import QRCode from 'qrcode';
+import logo from '../../brand/logo.svg?raw';
+import { site } from '../lib/site';
+import { euro, fromPrice, planPrice, plans, policies, services } from '../lib/pricing';
+
+const url = site.url;
+const qr = await QRCode.toString(url, {
+  type: 'svg',
+  margin: 0,
+  errorCorrectionLevel: 'M',
+  color: { dark: '#1e2320', light: '#0000' },
+});
+const rec = plans.find((p) => p.recommended) ?? plans[0];
+const std = services.standard;
+const prices = [
+  { name: 'Κανονικός καθαρισμός', note: 'σπίτι έως 60 τ.μ.', price: `${euro(std.prices.s as number)}` },
+  {
+    name: `${rec.name}`,
+    note: 'ίδια μέρα, ίδιος άνθρωπος',
+    price: `${euro(planPrice(std.prices.s as number, rec.discount))}`,
+    unit: 'η επίσκεψη',
+  },
+  { name: services.deep.name, note: 'από πάνω μέχρι κάτω', price: `από ${euro(fromPrice('deep')!)}` },
+  { name: 'Airbnb', note: 'ανάμεσα σε επισκέπτες', price: `από ${euro(fromPrice('airbnb')!)}` },
+];
+const cleanSvg = (s: string) => s.replace(/<title>.*?<\/title>\n?/, '').replace(/ width="\d+" height="\d+"/, '');
+const host = new URL(url).host;
+---
+
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Φυλλάδιο A5 | Αστράφτει</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <style is:global>
+      @font-face {
+        font-family: 'Literata';
+        src: url('/fonts/literata-greek.woff2') format('woff2');
+        font-weight: 400 700;
+        unicode-range: U+0370-03FF;
+      }
+      @font-face {
+        font-family: 'Literata';
+        src: url('/fonts/literata-latin.woff2') format('woff2');
+        font-weight: 400 700;
+        unicode-range: U+0000-036F, U+2000-20FF;
+      }
+      @font-face {
+        font-family: 'Commissioner';
+        src: url('/fonts/commissioner-greek.woff2') format('woff2');
+        font-weight: 300 700;
+        unicode-range: U+0370-03FF;
+      }
+      @font-face {
+        font-family: 'Commissioner';
+        src: url('/fonts/commissioner-latin.woff2') format('woff2');
+        font-weight: 300 700;
+        unicode-range: U+0000-036F, U+2000-20FF;
+      }
+      @page {
+        size: A5;
+        margin: 0;
+      }
+      :root {
+        --ink: #1e2320;
+        --soft: #525a55;
+        --green: #1f4a40;
+        --terra: #a84b24;
+        --line: #d9d1c3;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        background: #e9e4da;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      body {
+        font-family: 'Commissioner', sans-serif;
+        color: var(--ink);
+      }
+      .sheet {
+        width: 148mm;
+        height: 210mm;
+        margin: 10mm auto;
+        background: #fff;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        padding: 11mm 11mm 0;
+        box-shadow: 0 4px 24px rgb(0 0 0 / 0.12);
+      }
+      @media print {
+        html,
+        body {
+          background: #fff;
+        }
+        .sheet {
+          margin: 0;
+          box-shadow: none;
+        }
+        .help {
+          display: none;
+        }
+      }
+      .logo svg {
+        height: 13mm;
+        width: auto;
+        display: block;
+        margin-left: -1.5mm;
+      }
+      h1 {
+        font-family: 'Literata', serif;
+        font-weight: 560;
+        font-size: 29pt;
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+        margin: 7mm 0 0;
+      }
+      h1 em {
+        font-style: normal;
+        color: var(--green);
+      }
+      .sub {
+        font-size: 11pt;
+        line-height: 1.45;
+        color: var(--soft);
+        margin: 4mm 0 0;
+        max-width: 105mm;
+      }
+      .prices {
+        list-style: none;
+        margin: 5.5mm 0 0;
+        padding: 0;
+        border-top: 0.4mm solid var(--ink);
+      }
+      .prices li {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 4mm;
+        padding: 2.1mm 0;
+        border-bottom: 0.25mm solid var(--line);
+      }
+      .prices b {
+        font-weight: 600;
+        font-size: 11pt;
+      }
+      .prices small {
+        display: block;
+        color: var(--soft);
+        font-size: 8.5pt;
+      }
+      .prices .p {
+        font-family: 'Literata', serif;
+        font-weight: 600;
+        font-size: 17pt;
+        color: var(--terra);
+        white-space: nowrap;
+      }
+      .prices .p span {
+        font-family: 'Commissioner', sans-serif;
+        font-size: 8pt;
+        font-weight: 500;
+        color: var(--soft);
+        margin-left: 1mm;
+      }
+      .contact {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 6mm;
+        margin-top: 5mm;
+      }
+      .phone {
+        font-family: 'Literata', serif;
+        font-weight: 600;
+        font-size: 25pt;
+        letter-spacing: -0.01em;
+        color: var(--green);
+        line-height: 1;
+        white-space: nowrap;
+      }
+      .apps {
+        font-size: 9.5pt;
+        color: var(--soft);
+        margin-top: 2mm;
+      }
+      .facts {
+        font-size: 8.5pt;
+        color: var(--soft);
+        margin-top: 3mm;
+        line-height: 1.5;
+      }
+      .qr {
+        text-align: center;
+        flex: none;
+      }
+      .qr svg {
+        width: 25mm;
+        height: 25mm;
+        display: block;
+      }
+      .qr p {
+        font-size: 7.5pt;
+        margin: 1.5mm 0 0;
+        color: var(--soft);
+      }
+      .qr strong {
+        display: block;
+        color: var(--ink);
+        font-size: 8pt;
+      }
+      .tabs {
+        margin: auto -11mm 0;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        border-top: 0.3mm dashed #9a9a9a;
+        height: 28mm;
+        flex: none;
+      }
+      .tab {
+        position: relative;
+        border-left: 0.3mm dashed #9a9a9a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .tab:first-child {
+        border-left: 0;
+      }
+      .tab span {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        white-space: nowrap;
+        text-align: center;
+        line-height: 1.2;
+      }
+      .tab b {
+        display: block;
+        font-family: 'Literata', serif;
+        font-weight: 600;
+        font-size: 9.5pt;
+        color: var(--green);
+      }
+      .tab small {
+        display: block;
+        font-size: 7pt;
+        color: var(--soft);
+      }
+      .help {
+        max-width: 148mm;
+        margin: 0 auto 10mm;
+        font: 13px/1.5 system-ui, sans-serif;
+        color: #444;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sheet">
+      <div class="logo" set:html={cleanSvg(logo)} />
+      <h1>Γυρνάς σπίτι<br />και <em>αστράφτει.</em></h1>
+      <p class="sub">
+        Καθαρίζω σπίτια στη γειτονιά σου. Έρχομαι πάντα εγώ, με τα δικά μου υλικά, και κόβω απόδειξη.
+      </p>
+
+      <ul class="prices">
+        {
+          prices.map((p) => (
+            <li>
+              <span>
+                <b>{p.name}</b>
+                <small>{p.note}</small>
+              </span>
+              <span class="p">
+                {p.price}
+                {p.unit && <span>{p.unit}</span>}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="contact">
+        <div>
+          <div class="phone">{site.contact.phoneDisplay}</div>
+          <div class="apps">Κλήση · Viber · WhatsApp</div>
+          <div class="facts">
+            Ακύρωση δωρεάν έως {policies.freeCancelHours} ώρες πριν.<br />Μηνιαίο πρόγραμμα χωρίς συμβόλαιο.
+          </div>
+        </div>
+        <div class="qr">
+          <Fragment set:html={qr} />
+          <p><strong>Όλες οι τιμές</strong>{host}</p>
+        </div>
+      </div>
+
+      <div class="tabs" aria-hidden="true">
+        {
+          Array.from({ length: 7 }).map(() => (
+            <div class="tab">
+              <span>
+                <b>{site.contact.phoneDisplay}</b>
+                <small>Αστράφτει</small>
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <p class="help">
+      Εκτύπωση: A5 (ή A4 με «2 σελίδες ανά φύλλο»), χωρίς περιθώρια, με ενεργοποιημένα τα «γραφικά φόντου». Για PDF:
+      <code>npm run flyer</code>.
+    </p>
+  </body>
+</html>

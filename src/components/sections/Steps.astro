@@ -1,0 +1,91 @@
+---
+const steps = [
+  {
+    title: 'Μου λες τι χρειάζεσαι',
+    text: 'Πάρε με τηλέφωνο ή στείλε μου στο Viber. Πες μου πόσα τετραγωνικά είναι το σπίτι και τι θες να γίνει.',
+  },
+  {
+    title: 'Κλείνουμε μέρα',
+    text: 'Βρίσκουμε μέρα και ώρα που σε βολεύει. Αν θες να έρχομαι τακτικά, κρατάμε σταθερή μέρα.',
+  },
+  {
+    title: 'Έρχομαι και καθαρίζω',
+    text: 'Φέρνω τα υλικά μου και πιάνω δουλειά. Πληρώνεις στο τέλος και παίρνεις απόδειξη.',
+  },
+];
+---
+
+<section class="section section--sand" id="pos-douleuo" aria-labelledby="steps-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Πώς δουλεύω</p>
+      <h2 id="steps-title">Χωρίς πολλά-πολλά.</h2>
+    </div>
+    <ol class="steps">
+      {
+        steps.map((s, i) => (
+          <li class="step">
+            <span class="step__num" aria-hidden="true">
+              {i + 1}
+            </span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    counter-reset: step;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    column-gap: 1rem;
+    row-gap: 0.4rem;
+    padding-block: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .step:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .step__num {
+    grid-row: span 2;
+    font-family: var(--serif);
+    font-size: 3rem;
+    line-height: 0.9;
+    font-weight: 500;
+    color: var(--terracotta);
+  }
+  .step p {
+    color: var(--ink-soft);
+    max-width: 30rem;
+  }
+
+  @media (min-width: 900px) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+    .step,
+    .step:last-child {
+      grid-template-columns: 1fr;
+      border-bottom: 0;
+      border-top: 1px solid var(--ink);
+      padding-top: 1.75rem;
+    }
+    .step__num {
+      grid-row: auto;
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+  }
+</style>

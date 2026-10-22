@@ -1,0 +1,26 @@
+---
+import Base from './Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileBar from '../components/MobileBar.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  noindex?: boolean;
+}
+const { title, description, path, noindex } = Astro.props;
+---
+
+<Base title={title} description={description} path={path} noindex={noindex}>
+  <a class="skip-link" href="#main">Πήγαινε στο περιεχόμενο</a>
+  <Header home={false} />
+  <main id="main" class="section">
+    <div class="wrap">
+      <slot />
+    </div>
+  </main>
+  <Footer />
+  <MobileBar />
+</Base>

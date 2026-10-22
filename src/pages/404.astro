@@ -1,0 +1,19 @@
+---
+import Page from '../layouts/Page.astro';
+---
+
+<Page title="Δεν βρέθηκε | Αστράφτει" description="Αυτή η σελίδα δεν υπάρχει." path="/404/" noindex>
+  <div class="prose notfound">
+    <p class="eyebrow">404</p>
+    <h1>Αυτή η σελίδα δεν υπάρχει.</h1>
+    <p class="lead">Το υπόλοιπο site όμως αστράφτει.</p>
+    <p><a class="btn" href="/">Πήγαινε στην αρχή</a></p>
+  </div>
+</Page>
+
+<style>
+  .notfound {
+    min-height: 40vh;
+    align-content: center;
+  }
+</style>

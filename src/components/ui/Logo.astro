@@ -1,0 +1,43 @@
+---
+/** Header logo: the brand mark + wordmark, inlined from brand/ so it needs no request. */
+import mark from '../../../brand/mark.svg?raw';
+import wordmark from '../../../brand/wordmark-plain.svg?raw';
+import markDark from '../../../brand/mark-dark.svg?raw';
+import wordmarkDark from '../../../brand/wordmark-plain-dark.svg?raw';
+
+interface Props {
+  dark?: boolean;
+  class?: string;
+}
+const { dark = false, class: className } = Astro.props;
+
+// Strip the outer title/size so the SVGs scale with CSS and don't double-announce.
+const clean = (svg: string) =>
+  svg
+    .replace(/<title>.*?<\/title>\n?/, '')
+    .replace(/ width="\d+" height="\d+"/, '')
+    .replace(/ role="img" aria-label="[^"]*"/, ' aria-hidden="true" focusable="false"');
+---
+
+<span class:list={['logo', className]}>
+  <span class="logo__mark" set:html={clean(dark ? markDark : mark)} />
+  <span class="logo__word" set:html={clean(dark ? wordmarkDark : wordmark)} />
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    line-height: 0;
+  }
+  .logo__mark :global(svg) {
+    height: 2.6rem;
+    width: auto;
+    margin-left: -0.35rem;
+  }
+  .logo__word :global(svg) {
+    height: 2.6rem;
+    width: auto;
+  }
+</style>

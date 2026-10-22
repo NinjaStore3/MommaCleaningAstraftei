@@ -1,0 +1,139 @@
+---
+import Icon from './ui/Icon.astro';
+import { site, links, filled, hasEmail } from '../lib/site';
+
+const b = site.business;
+const socials = [
+  { key: 'instagram', label: 'Instagram', url: site.socials.instagram },
+  { key: 'facebook', label: 'Facebook', url: site.socials.facebook },
+  { key: 'google', label: 'Google', url: site.socials.google },
+].filter((s) => filled(s.url)) as { key: 'instagram' | 'facebook' | 'google'; label: string; url: string }[];
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__brand">
+      <img src="/brand/logo-stacked-dark.svg" alt={`${site.name}, ${site.tagline}`} width="539" height="299" loading="lazy" />
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__h">Επικοινωνία</h2>
+      <ul role="list">
+        <li><a href={links.tel}>{site.contact.phoneDisplay}</a></li>
+        {hasEmail && <li><a href={links.mail()}>{site.contact.email}</a></li>}
+        <li>{site.contact.hours}</li>
+      </ul>
+      {
+        socials.length > 0 && (
+          <ul class="site-footer__social" role="list">
+            {socials.map((s) => (
+              <li>
+                <a href={s.url} rel="noopener" target="_blank">
+                  <Icon name={s.key} label={s.label} />
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__h">Στοιχεία επιχείρησης</h2>
+      <ul role="list">
+        <li>{b.legalName}</li>
+        <li>Οικιακός καθαρισμός, Αθήνα</li>
+        <li>ΑΦΜ {b.afm} · ΔΟΥ {b.doy}</li>
+        <li>{b.address}</li>
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__h">Πληροφορίες</h2>
+      <ul role="list">
+        <li><a href="/politiki-aporritou/">Πολιτική απορρήτου</a></li>
+        <li><a href="/oroi/">Όροι</a></li>
+        <li><a href="/#times">Τιμές</a></li>
+        <li><a href="/#erotiseis">Συχνές ερωτήσεις</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap site-footer__bottom">
+    <p>© {year} {site.name}. Δεν χρησιμοποιώ cookies.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--green-deep);
+    color: rgb(247 244 238 / 0.85);
+    padding-block: 4rem 2rem;
+    font-size: 0.9375rem;
+  }
+  .site-footer a {
+    color: var(--limestone);
+    text-decoration-color: rgb(247 244 238 / 0.35);
+  }
+  .site-footer a:hover {
+    color: var(--gold);
+  }
+  .site-footer :focus-visible {
+    outline-color: var(--gold);
+  }
+  .site-footer__grid {
+    display: grid;
+    gap: 2.5rem;
+  }
+  .site-footer__brand img {
+    width: 11rem;
+    height: auto;
+  }
+  .site-footer__h {
+    font-family: var(--sans);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.9rem;
+  }
+  .site-footer ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+  .site-footer__social {
+    display: flex !important;
+    gap: 0.5rem !important;
+    margin-top: 1rem !important;
+  }
+  .site-footer__social a {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid rgb(247 244 238 / 0.3);
+    border-radius: 50%;
+  }
+  .site-footer__social :global(svg) {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .site-footer__bottom {
+    margin-top: 3rem;
+    font-size: 0.875rem;
+    color: rgb(247 244 238 / 0.7);
+  }
+  .site-footer__bottom p {
+    padding-top: 1.5rem;
+    border-top: 1px solid rgb(247 244 238 / 0.15);
+  }
+  @media (min-width: 900px) {
+    .site-footer__grid {
+      grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    }
+  }
+</style>
