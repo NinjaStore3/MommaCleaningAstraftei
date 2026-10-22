@@ -1,6 +1,6 @@
 ---
 import Page from '../layouts/Page.astro';
-import { site, filled, links, hasEmail, ownerName } from '../lib/site';
+import { site, filled, links, hasEmail } from '../lib/site';
 
 const b = site.business;
 const analytics = site.analytics.cloudflare || filled(site.analytics.cloudflareToken);
@@ -19,9 +19,9 @@ const analytics = site.analytics.cloudflare || filled(site.analytics.cloudflareT
       για διαφήμιση και ο ιστότοπος δεν χρησιμοποιεί cookies.
     </p>
 
-    <h2>Υπεύθυνη επεξεργασίας</h2>
+    <h2>Υπεύθυνος επεξεργασίας</h2>
     <p>
-      {ownerName}, {b.address}, ΑΦΜ {b.afm}. Τηλέφωνο <a href={links.tel}>{site.contact.phoneDisplay}</a>{
+      {site.name}, {b.address}, ΑΦΜ {b.afm}, ΔΟΥ {b.doy}. Τηλέφωνο <a href={links.tel}>{site.contact.phoneDisplay}</a>{
         hasEmail && (
           <>
             , email <a href={links.mail()}>{site.contact.email}</a>

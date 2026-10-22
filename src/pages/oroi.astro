@@ -1,6 +1,6 @@
 ---
 import Page from '../layouts/Page.astro';
-import { site, links, hasEmail, ownerName } from '../lib/site';
+import { site, links, hasEmail } from '../lib/site';
 import { euro, lateCancelText, listOr, policies } from '../lib/pricing';
 
 const b = site.business;
@@ -73,7 +73,7 @@ const b = site.business;
 
     <h2>Στοιχεία</h2>
     <p>
-      {ownerName}, οικιακός καθαρισμός. ΑΦΜ {b.afm}, ΔΟΥ {b.doy}. {b.address}. Τηλέφωνο
+      {site.name}, οικιακός καθαρισμός. ΑΦΜ {b.afm}, ΔΟΥ {b.doy}. {b.address}. Τηλέφωνο
       <a href={links.tel}>{site.contact.phoneDisplay}</a>{
         hasEmail && (
           <>

@@ -4,9 +4,8 @@ Everything below is a placeholder or a decision only you (and she) can make. Mos
 
 ## Must do before launch
 
-Done: first name (Ευγενία, since 1989), phone 690 825 2007 on Viber + WhatsApp, email, ΑΦΜ, ΔΟΥ, address, base area, all-Athens coverage, payment methods (μετρητά, τραπεζική μεταφορά), about text. The booking form needs no key: it opens WhatsApp/Viber/email with the message ready.
+Done: company name Αστράφτει (no personal surname shown), first name (Ευγενία, since 1989), phone 690 825 2007 on Viber + WhatsApp, email, ΑΦΜ, ΔΟΥ, address, base area, all-Athens coverage, payment methods (μετρητά, τραπεζική μεταφορά), about text. The booking form needs no key: it opens WhatsApp/Viber/email with the message ready.
 
-- [ ] **Her surname**: `business.legalName` (full name, as registered with ΑΑΔΕ). Until it's filled, the footer and legal pages show just "Ευγενία". Greek law expects the full name of the business owner.
 - [ ] **Working hours**: `contact.hours` (now "Δευτέρα–Σάββατο, 8:00–20:00"). Confirm with her.
 - [ ] **Read the site with her**: especially the about section ("Ποια είμαι"), and change anything that isn't true for her.
 - [ ] **Address on the site**: `Σμύρνης 3, 13562 Άγιοι Ανάργυροι` is shown in the footer and legal pages as the business seat. If that's her home and she'd rather not publish it, ask the accountant what's acceptable.
