@@ -1,0 +1,186 @@
+---
+import Icon from '../ui/Icon.astro';
+import Glint from '../ui/Glint.astro';
+import Photo from '../ui/Photo.astro';
+import { site } from '../../lib/site';
+import { euro, hoursLabel, planPrice, plans, policies, services, sizes } from '../../lib/pricing';
+
+const first = sizes[0];
+const startPrice = services.standard.prices[first.id as 's'];
+const startHours = services.standard.hours[first.id as 's'];
+const recommended = plans.find((p) => p.recommended) ?? plans[0];
+---
+
+<section class="hero" id="top">
+  <div class="wrap hero__grid">
+    <div class="hero__text">
+      <p class="eyebrow">Καθαρισμός σπιτιού · Αθήνα</p>
+      <h1>Γυρνάς σπίτι και <span class="hero__shine">αστράφτει<Glint class="hero__glint" /></span>.</h1>
+      <p class="lead hero__lead">
+        Είμαι η {site.owner.firstName} και καθαρίζω σπίτια. Φέρνω τα δικά μου υλικά και έρχομαι πάντα εγώ, όχι
+        συνεργείο.
+      </p>
+
+      <div class="hero__price">
+        <span class="hero__from">από</span>
+        <span class="price hero__amount">{euro(startPrice)}</span>
+        <span class="hero__price-note">σπίτι {first.label}<br />{hoursLabel(startHours)}, με τα υλικά</span>
+      </div>
+
+      <div class="hero__ctas">
+        <a class="btn" href="#epikoinonia">Κλείσε ραντεβού</a>
+        <a class="btn btn--ghost" href="#ypologismos">Υπολόγισε το κόστος</a>
+      </div>
+
+      <ul class="checks hero__facts">
+        <li><Icon name="check" />Απόδειξη κάθε φορά</li>
+        <li><Icon name="check" />Ακύρωση δωρεάν έως {policies.freeCancelHours} ώρες πριν</li>
+        <li><Icon name="check" />Μηνιαίο πρόγραμμα χωρίς συμβόλαιο</li>
+      </ul>
+    </div>
+
+    <div class="hero__visual">
+      <Photo
+        name="hero"
+        shape="arch"
+        alt="Φωτεινό σαλόνι μετά τον καθαρισμό"
+        caption="σαλόνι μετά τον καθαρισμό"
+        sizes="(min-width: 900px) 38vw, 90vw"
+        loading="eager"
+        class="hero__photo"
+      />
+      <a class="hero__note" href="#times">
+        <span class="hero__note-label">{recommended.name}</span>
+        <span><strong class="price">{euro(planPrice(startPrice, recommended.discount))}</strong> η επίσκεψη</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(2rem, 1rem + 4vw, 5rem) var(--section);
+  }
+  .hero__grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .hero__text {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+  }
+  .hero__shine {
+    position: relative;
+    display: inline-block;
+    white-space: nowrap;
+    color: var(--green);
+  }
+  .hero__shine :global(.hero__glint) {
+    position: absolute;
+    display: inline-block;
+    width: 0.32em;
+    height: 0.32em;
+    right: 0.02em;
+    top: -0.05em;
+    color: var(--terracotta);
+  }
+  .hero__lead {
+    max-width: 34rem;
+  }
+
+  .hero__price {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: baseline;
+    column-gap: 0.6rem;
+    padding: 1rem 0;
+    border-block: 1px solid var(--line);
+    width: 100%;
+    max-width: 30rem;
+  }
+  .hero__from {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    color: var(--ink-soft);
+  }
+  .hero__amount {
+    font-size: clamp(3rem, 2.4rem + 2.5vw, 4.25rem);
+    line-height: 1;
+  }
+  .hero__price-note {
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    line-height: 1.4;
+    padding-left: 0.5rem;
+  }
+
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .hero__facts {
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+    gap: 0.4rem;
+  }
+
+  .hero__visual {
+    position: relative;
+    max-width: 26rem;
+    width: 100%;
+    justify-self: center;
+  }
+  .hero__visual :global(.hero__photo) {
+    aspect-ratio: 4 / 5;
+    margin: 0;
+  }
+  .hero__note {
+    position: absolute;
+    right: -0.75rem;
+    bottom: -1.25rem;
+    display: grid;
+    gap: 0.1rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    color: var(--ink);
+    text-decoration: none;
+    box-shadow: 0 10px 30px -12px rgb(30 35 32 / 0.25);
+    font-size: 0.9375rem;
+  }
+  .hero__note:hover {
+    color: var(--ink);
+    border-color: var(--green);
+  }
+  .hero__note-label {
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+  .hero__note .price {
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: 899px) {
+    .hero__visual {
+      max-width: 20rem;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .hero__grid {
+      grid-template-columns: 7fr 5fr;
+      gap: 4rem;
+    }
+    .hero__visual {
+      justify-self: end;
+    }
+    .hero__note {
+      right: -1.5rem;
+    }
+  }
+</style>

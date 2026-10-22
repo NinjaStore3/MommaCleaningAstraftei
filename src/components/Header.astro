@@ -1,0 +1,253 @@
+---
+import Logo from './ui/Logo.astro';
+import Icon from './ui/Icon.astro';
+import { site, links } from '../lib/site';
+
+interface Props {
+  /** On the legal pages the anchors point back to the home page. */
+  home?: boolean;
+}
+const { home = true } = Astro.props;
+const base = home ? '' : '/';
+
+const nav = [
+  { href: '#times', label: 'Τιμές' },
+  { href: '#ypiresies', label: 'Υπηρεσίες' },
+  { href: '#pos-douleuo', label: 'Πώς δουλεύω' },
+  { href: '#erotiseis', label: 'Ερωτήσεις' },
+];
+---
+
+<header class="site-header" data-header>
+  <div class="wrap site-header__inner">
+    <a href={home ? '#top' : '/'} class="site-header__logo" aria-label={`${site.name}, αρχική`}>
+      <Logo />
+    </a>
+
+    <nav class="site-nav" aria-label="Κύριο μενού" id="site-nav" data-nav>
+      <ul>
+        {
+          nav.map((n) => (
+            <li>
+              <a href={`${base}${n.href}`}>{n.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="btn site-nav__cta" href={`${base}#epikoinonia`}>Κλείσε ραντεβού</a>
+      <a class="site-nav__phone" href={links.tel}>
+        <Icon name="phone" />
+        <span>{site.contact.phoneDisplay}</span>
+      </a>
+    </nav>
+
+    <div class="site-header__actions">
+      <a class="btn btn--small site-header__cta" href={`${base}#epikoinonia`}>Κλείσε ραντεβού</a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+        data-menu-toggle
+      >
+        <Icon name="menu" class="menu-toggle__open" />
+        <Icon name="close" class="menu-toggle__close" />
+        <span class="visually-hidden">Μενού</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+
+  const setOpen = (open: boolean) => {
+    toggle?.setAttribute('aria-expanded', String(open));
+    header?.classList.toggle('is-open', open);
+  };
+  toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  nav?.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('a')) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && header?.classList.contains('is-open')) {
+      setOpen(false);
+      toggle?.focus();
+    }
+  });
+
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--limestone);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+  }
+  .site-header.is-scrolled,
+  .site-header.is-open {
+    border-bottom-color: var(--line);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: var(--header-h);
+  }
+  .site-header__logo {
+    flex: none;
+    display: inline-flex;
+    padding-block: 0.5rem;
+  }
+  .site-header__logo :global(.logo__mark svg) {
+    height: 2.4rem;
+  }
+  .site-header__logo :global(.logo__word svg) {
+    height: 1.7rem;
+  }
+
+  .site-nav {
+    display: none;
+  }
+  .site-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 0.25rem;
+  }
+  .site-nav a {
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 999px;
+  }
+  .site-nav a:hover {
+    color: var(--green);
+    background: var(--green-tint);
+  }
+  .site-nav__phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .site-nav__phone :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--green);
+  }
+
+  .site-header__actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .menu-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .menu-toggle :global(svg) {
+    width: 1.35rem;
+    height: 1.35rem;
+    grid-area: 1 / 1;
+  }
+  .menu-toggle__close,
+  .is-open .menu-toggle__open {
+    display: none;
+  }
+  .is-open .menu-toggle__close {
+    display: block;
+  }
+
+  /* Mobile: dropdown panel */
+  @media (max-width: 899px) {
+    .is-open .site-nav {
+      display: grid;
+      gap: 0.5rem;
+      position: absolute;
+      inset: 100% 0 auto 0;
+      background: var(--limestone);
+      border-bottom: 1px solid var(--line);
+      padding: 0.75rem var(--gutter) 1.25rem;
+    }
+    .is-open .site-nav ul {
+      flex-direction: column;
+    }
+    .is-open .site-nav a {
+      display: block;
+      padding: 0.8rem 0.25rem;
+      font-size: 1.125rem;
+      border-radius: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .is-open .site-nav a.site-nav__phone {
+      display: flex;
+      border-bottom: 0;
+      padding-top: 1rem;
+    }
+  }
+
+  .site-nav__cta {
+    display: none !important;
+  }
+  @media (max-width: 479px) {
+    .site-header__cta {
+      display: none;
+    }
+    .is-open .site-nav__cta {
+      display: inline-flex !important;
+      margin-top: 0.75rem;
+      color: #fff;
+      border-bottom: 0 !important;
+      border-radius: 999px !important;
+      font-size: 1rem !important;
+      padding: 0.7rem 1.4rem !important;
+      justify-self: start;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-left: auto;
+    }
+    .site-header__actions {
+      margin-left: 0;
+    }
+    .menu-toggle {
+      display: none;
+    }
+  }
+  @media (min-width: 900px) and (max-width: 1099px) {
+    .site-nav__phone span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+  }
+</style>

@@ -1,0 +1,752 @@
+---
+import Icon from '../ui/Icon.astro';
+import {
+  addons,
+  euro,
+  fromPrice,
+  hoursLabel,
+  pct,
+  plans,
+  policies,
+  services,
+  sizes,
+  type ServiceId,
+} from '../../lib/pricing';
+import { hasEmail } from '../../lib/site';
+
+const choices: ServiceId[] = ['standard', 'deep', 'move', 'airbnb'];
+const first = services.standard;
+---
+
+<section class="section section--sand" id="ypologismos" aria-labelledby="est-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Υπολογισμός κόστους</p>
+      <h2 id="est-title">Δες πόσο θα σου κοστίσει</h2>
+      <p>Διάλεξε τι θες και η τιμή βγαίνει αμέσως. Μετά μου τη στέλνεις με ένα πάτημα.</p>
+    </div>
+
+    <form class="est" data-estimator novalidate>
+      <div class="est__mini" aria-hidden="true">
+        <span><strong class="price" data-out="visit-mini">{euro(first.prices.s)}</strong> <span data-out="unit-mini">την επίσκεψη</span></span>
+        <span data-out="hours-mini">{hoursLabel(first.hours.s)}</span>
+      </div>
+
+      <div class="est__fields">
+        <fieldset class="est__group">
+          <legend><span class="est__n">1</span>Τι χρειάζεσαι;</legend>
+          <div class="opts opts--cards">
+            {
+              choices.map((id, i) => (
+                <label class="opt opt--card">
+                  <input type="radio" name="service" value={id} checked={i === 0} />
+                  <span class="opt__body">
+                    <span class="opt__title">{services[id].name}</span>
+                    <span class="opt__meta">από {euro(fromPrice(id)!)}</span>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+          <p class="est__hint">
+            Μετά από ανακαίνιση; Εκεί πρέπει πρώτα να έρθω να το δω. <a href="#epikoinonia">Πες μου</a>.
+          </p>
+        </fieldset>
+
+        <fieldset class="est__group">
+          <legend><span class="est__n">2</span>Πόσο μεγάλο είναι το σπίτι;</legend>
+          <div class="opts opts--chips">
+            {
+              sizes.map((s, i) => (
+                <label class="opt opt--chip">
+                  <input type="radio" name="size" value={s.id} checked={i === 0} />
+                  <span class="opt__body">
+                    <span class="opt__title">{s.label}</span>
+                    <span class="opt__meta" data-size-hint={s.id} />
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="est__group" data-freq>
+          <legend><span class="est__n">3</span>Πόσο συχνά;</legend>
+          <div class="opts opts--chips">
+            <label class="opt opt--chip">
+              <input type="radio" name="freq" value="once" checked />
+              <span class="opt__body"><span class="opt__title">Μία φορά</span></span>
+            </label>
+            {
+              plans.map((p) => (
+                <label class="opt opt--chip">
+                  <input type="radio" name="freq" value={p.id} />
+                  <span class="opt__body">
+                    <span class="opt__title">{p.name}</span>
+                    <span class="opt__meta">
+                      {pct(p.discount)}
+                      {p.recommended && ' · προτείνω'}
+                    </span>
+                  </span>
+                </label>
+              ))
+            }
+          </div>
+          <p class="est__hint" data-freq-note hidden>Τα μηνιαία προγράμματα είναι για τον κανονικό καθαρισμό.</p>
+        </fieldset>
+
+        <fieldset class="est__group">
+          <legend><span class="est__n">4</span>Πρόσθετα <span class="est__opt">(αν θες)</span></legend>
+          <div class="addon-list">
+            {
+              addons.map((a) => (
+                <div class="addon">
+                  <label class="addon__main">
+                    <input type="checkbox" name="addon" value={a.id} />
+                    <span class="addon__name">
+                      {a.name}
+                      {a.note && <span class="addon__note">{a.note}</span>}
+                    </span>
+                    <span class="addon__price">
+                      {euro(a.price)}
+                      {a.perHour && '/ώρα'}
+                    </span>
+                  </label>
+                  {(a.includedQty || a.perHour) && (
+                    <div class="stepper" data-stepper={a.id} hidden>
+                      <span class="stepper__label" id={`qty-${a.id}-label`}>
+                        {a.perHour ? 'Ώρες' : 'Πόσα φύλλα;'}
+                      </span>
+                      <button type="button" class="stepper__btn" data-step="-1" aria-label="Λιγότερα">
+                        <Icon name="minus" />
+                      </button>
+                      <input
+                        type="number"
+                        inputmode="numeric"
+                        name={`qty-${a.id}`}
+                        min="1"
+                        max={a.perHour ? 6 : 30}
+                        value={a.includedQty ?? 1}
+                        aria-labelledby={`qty-${a.id}-label`}
+                      />
+                      <button type="button" class="stepper__btn" data-step="1" aria-label="Περισσότερα">
+                        <Icon name="plus" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="est__group">
+          <legend><span class="est__n">5</span>Υλικά</legend>
+          <label class="addon__main addon__main--solo">
+            <input type="checkbox" name="ownMaterials" value="1" />
+            <span class="addon__name">Να δουλέψω με τα δικά σου προϊόντα</span>
+            <span class="addon__price">−{euro(policies.ownMaterialsDiscount)}</span>
+          </label>
+        </fieldset>
+      </div>
+
+      <aside class="est__sum" aria-labelledby="est-sum-title">
+        <p class="est__sum-label" id="est-sum-title">Η εκτίμησή σου</p>
+        <p class="est__total" aria-live="polite" aria-atomic="true">
+          <span class="price" data-out="visit">{euro(first.prices.s)}</span>
+          <span class="est__unit" data-out="unit">την επίσκεψη</span>
+        </p>
+        <p class="est__month" data-out="month" hidden></p>
+        <p class="est__hours">
+          <Icon name="clock" />
+          <span data-out="hours">{hoursLabel(first.hours.s)}</span>
+        </p>
+        <ul class="est__lines" data-out="lines" role="list"></ul>
+        <p class="est__warn" data-out="warn" hidden></p>
+        <p class="est__fine">
+          Είναι εκτίμηση. Την τελική τιμή την κλείνουμε όταν μιλήσουμε, πριν ξεκινήσω, και δεν αλλάζει μετά.
+        </p>
+
+        <div class="est__send">
+          <p class="est__send-label">Στείλ' το μου:</p>
+          <a class="btn btn--green btn--block" data-send="viber" href="#">
+            <Icon name="viber" /> Viber
+          </a>
+          <a class="btn btn--green btn--block" data-send="whatsapp" href="#" target="_blank" rel="noopener">
+            <Icon name="whatsapp" /> WhatsApp
+          </a>
+          {
+            hasEmail && (
+              <a class="btn btn--ghost btn--block" data-send="email" href="#">
+                <Icon name="mail" /> Email
+              </a>
+            )
+          }
+          <a class="btn btn--ghost btn--block" data-send="form" href="#epikoinonia">Με τη φόρμα</a>
+          <p class="est__copied small" data-out="copied" role="status" hidden>
+            Το μήνυμα αντιγράφηκε. Αν δεν εμφανιστεί στο Viber, κάνε επικόλληση.
+          </p>
+        </div>
+      </aside>
+    </form>
+  </div>
+</section>
+
+<script>
+  import pricing from '../../data/pricing.json';
+  import { euro, hoursLabel, planPrice } from '../../lib/pricing';
+  import { links } from '../../lib/site';
+
+  type Size = 's' | 'm' | 'l' | 'xl';
+  type Svc = 'standard' | 'deep' | 'move' | 'airbnb';
+
+  const form = document.querySelector<HTMLFormElement>('[data-estimator]');
+  if (form) init(form);
+
+  function init(form: HTMLFormElement) {
+    const out = (k: string) => form.querySelector<HTMLElement>(`[data-out="${k}"]`)!;
+    const freqSet = form.querySelector<HTMLFieldSetElement>('[data-freq]')!;
+    const freqNote = form.querySelector<HTMLElement>('[data-freq-note]')!;
+    const sizeHints = form.querySelectorAll<HTMLElement>('[data-size-hint]');
+    let message = '';
+
+    const read = () => {
+      const fd = new FormData(form);
+      const service = fd.get('service') as Svc;
+      const size = fd.get('size') as Size;
+      const freq = service === 'standard' ? (fd.get('freq') as string) : 'once';
+      const picked = fd.getAll('addon') as string[];
+      const qty = (id: string) => Math.max(1, Math.round(Number(fd.get(`qty-${id}`)) || 1));
+      return { service, size, freq, picked, qty, own: fd.has('ownMaterials') };
+    };
+
+    const update = () => {
+      const s = read();
+      const svc = pricing.services[s.service];
+      const base = (svc.prices as Record<Size, number | null>)[s.size];
+      const baseHours = (svc.hours as Record<Size, number | null>)[s.size];
+      const plan = pricing.plans.find((p) => p.id === s.freq);
+
+      // Frequency only applies to the standard clean.
+      freqSet.disabled = s.service !== 'standard';
+      freqNote.hidden = s.service === 'standard';
+
+      // Size hints (e.g. "στούντιο / 1 υ/δ" for Airbnb).
+      const hints = (svc as { sizeHints?: Record<string, string> }).sizeHints ?? {};
+      sizeHints.forEach((el) => (el.textContent = hints[el.dataset.sizeHint!] ?? ''));
+
+      // Add-ons
+      const lines: string[] = [];
+      const msgAddons: string[] = [];
+      let extras = 0;
+      let minutes = 0;
+      for (const a of pricing.addons) {
+        const on = s.picked.includes(a.id);
+        const stepper = form.querySelector<HTMLElement>(`[data-stepper="${a.id}"]`);
+        if (stepper) stepper.hidden = !on;
+        if (!on) continue;
+        let cost = a.price;
+        let label = a.name;
+        if (a.perHour) {
+          const h = s.qty(a.id);
+          cost = a.price * h;
+          minutes += h * 60;
+          label = `${a.name} (${h} ${h === 1 ? 'ώρα' : 'ώρες'})`;
+        } else if (a.includedQty) {
+          const n = s.qty(a.id);
+          const extra = Math.max(0, n - a.includedQty);
+          cost = a.price + extra * (a.extraEach ?? 0);
+          minutes += (a.minutes ?? 0) + extra * (a.extraMinutes ?? 0);
+          label = `${a.name} (${n} ${a.unit})`;
+        } else {
+          minutes += a.minutes ?? 0;
+        }
+        extras += cost;
+        lines.push(`${label}: ${euro(cost)}`);
+        msgAddons.push(label);
+      }
+
+      const discount = s.own ? pricing.policies.ownMaterialsDiscount : 0;
+      const sizeLabel = pricing.sizes.find((z) => z.id === s.size)!.label;
+
+      let visitText: string;
+      let unitText = 'την επίσκεψη';
+      let monthText = '';
+      let estimate: string;
+
+      if (base == null) {
+        visitText = 'Θα σου πω';
+        unitText = 'μόλις μιλήσουμε';
+        if (extras) lines.push(`Τα πρόσθετα κάνουν ${euro(extras)}`);
+        estimate = 'τιμή κατόπιν συνεννόησης';
+      } else {
+        const visitBase = plan ? planPrice(base, plan.discount) : base;
+        const total = Math.max(0, visitBase + extras - discount);
+        lines.unshift(
+          plan
+            ? `${svc.name}, ${plan.name.toLowerCase()}: ${euro(visitBase)} (αντί ${euro(base)})`
+            : `${svc.name}: ${euro(base)}`,
+        );
+        if (discount) lines.push(`Δικά σου προϊόντα: −${euro(discount)}`);
+        visitText = euro(total);
+        if (plan) {
+          monthText = `${euro(total * plan.visitsPerMonth)} τον μήνα, ${plan.visitsPerMonth === 1 ? '1 επίσκεψη' : `${plan.visitsPerMonth} επισκέψεις`}`;
+        }
+        estimate = `${euro(total)} την επίσκεψη${plan ? ` (${euro(total * plan.visitsPerMonth)} τον μήνα)` : ''}`;
+      }
+
+      const hours = baseHours == null ? null : Math.round((baseHours + minutes / 60) * 2) / 2;
+      const hoursText = hours == null ? 'Η διάρκεια εξαρτάται από το σπίτι' : hoursLabel(hours);
+      if (hours != null) estimate += `, ${hoursLabel(hours)}`;
+
+      out('visit').textContent = visitText;
+      out('visit-mini').textContent = visitText;
+      out('unit').textContent = unitText;
+      out('unit-mini').textContent = unitText;
+      out('hours').textContent = hoursText;
+      out('hours-mini').textContent = hours == null ? '' : hoursLabel(hours);
+      out('month').textContent = monthText;
+      out('month').hidden = !monthText;
+      out('lines').innerHTML = '';
+      for (const l of lines) {
+        const li = document.createElement('li');
+        li.textContent = l;
+        out('lines').append(li);
+      }
+      const warn = out('warn');
+      warn.hidden = !(hours && hours > 8);
+      warn.textContent = 'Είναι πάνω από μια μέρα δουλειά για έναν άνθρωπο. Μάλλον θα το χωρίσουμε σε δύο επισκέψεις.';
+
+      // The message that goes to Viber / WhatsApp / email / the form.
+      const what = plan ? `${svc.name}, ${plan.name.toLowerCase()}` : svc.name;
+      const summary = [
+        `- Τι: ${what}`,
+        `- Σπίτι: ${sizeLabel}`,
+        msgAddons.length ? `- Πρόσθετα: ${msgAddons.join(', ')}` : '',
+        s.own ? '- Υλικά: θα χρησιμοποιήσεις τα δικά μου' : '',
+        `- Εκτίμηση από το site: ${estimate}`,
+      ].filter(Boolean);
+      form.dataset.summary = summary.join('\n');
+      form.dataset.service = s.service;
+      message = ['Γεια σας! Θα ήθελα ραντεβού για καθαρισμό.', ...summary, '- Περιοχή: ', '- Μέρα που με βολεύει: '].join('\n');
+
+      const send = (k: string) => form.querySelector<HTMLAnchorElement>(`[data-send="${k}"]`);
+      send('viber')?.setAttribute('href', links.viber(message));
+      send('whatsapp')?.setAttribute('href', links.whatsapp(message));
+      send('email')?.setAttribute('href', links.mail('Ραντεβού για καθαρισμό', message));
+    };
+
+    form.addEventListener('input', update);
+    form.addEventListener('change', update);
+    form.addEventListener('submit', (e) => e.preventDefault());
+
+    form.querySelectorAll<HTMLElement>('[data-stepper]').forEach((st) => {
+      const input = st.querySelector('input')!;
+      st.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) =>
+        b.addEventListener('click', () => {
+          const v = (Number(input.value) || 1) + Number(b.dataset.step);
+          input.value = String(Math.min(Number(input.max), Math.max(Number(input.min), v)));
+          update();
+        }),
+      );
+    });
+
+    // Viber can't always prefill text, so copy it to the clipboard too.
+    form.querySelector('[data-send="viber"]')?.addEventListener('click', () => {
+      navigator.clipboard?.writeText(message).then(
+        () => (out('copied').hidden = false),
+        () => {},
+      );
+    });
+
+    // "Με τη φόρμα": fill the booking form below with the selection.
+    form.querySelector('[data-send="form"]')?.addEventListener('click', () => {
+      window.dispatchEvent(
+        new CustomEvent('estimate:use', { detail: { service: form.dataset.service, summary: form.dataset.summary } }),
+      );
+    });
+
+    update();
+  }
+</script>
+
+<style>
+  .est {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    align-items: start;
+    position: relative;
+  }
+
+  /* Mobile: small sticky total while choosing */
+  .est__mini {
+    position: sticky;
+    top: calc(var(--header-h) + 0.5rem);
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    background: var(--ink);
+    color: var(--limestone);
+    padding: 0.7rem 1.1rem;
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    box-shadow: 0 8px 24px -12px rgb(30 35 32 / 0.5);
+  }
+  .est__mini .price {
+    color: var(--gold);
+    font-size: 1.375rem;
+  }
+
+  .est__fields {
+    display: grid;
+    gap: 2rem;
+    min-width: 0;
+  }
+  .est__group {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  .est__group[disabled] .opts {
+    opacity: 0.45;
+  }
+  .est__group legend {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    padding: 0;
+  }
+  .est__n {
+    display: inline-grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--green);
+    color: var(--limestone);
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    flex: none;
+  }
+  .est__opt {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+  }
+  .est__hint {
+    margin-top: 0.75rem;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+  }
+
+  /* Option cards and chips (styled radios) */
+  .opts {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .opts--cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .opts--chips {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .opt {
+    position: relative;
+    cursor: pointer;
+  }
+  .opt input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .opt__body {
+    display: grid;
+    gap: 0.15rem;
+    height: 100%;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    transition: border-color 0.15s ease;
+  }
+  .opt--chip .opt__body {
+    border-radius: 999px;
+    padding: 0.6rem 1.1rem;
+    min-height: 2.9rem;
+    align-content: center;
+  }
+  .opt__title {
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .opt__meta {
+    font-size: 0.8125rem;
+    color: var(--terracotta);
+    font-weight: 600;
+  }
+  .opt__meta:empty {
+    display: none;
+  }
+  .opt:hover .opt__body {
+    border-color: var(--green);
+  }
+  .opt input:checked + .opt__body {
+    border-color: var(--green);
+    background: var(--green);
+    color: var(--limestone);
+  }
+  .opt input:checked + .opt__body .opt__meta {
+    color: var(--gold);
+  }
+  .opt input:focus-visible + .opt__body {
+    outline: 3px solid var(--terracotta);
+    outline-offset: 2px;
+  }
+
+  /* Add-ons */
+  .addon-list {
+    display: grid;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .addon + .addon {
+    border-top: 1px solid var(--line);
+  }
+  .addon__main {
+    display: grid;
+    grid-template-columns: 1.35rem 1fr auto;
+    gap: 0.85rem;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+  }
+  .addon__main--solo {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .addon__main input {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin: 0;
+    accent-color: var(--green);
+    cursor: pointer;
+  }
+  .addon__name {
+    line-height: 1.35;
+  }
+  .addon__note {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+  .addon__price {
+    font-family: var(--serif);
+    font-weight: 600;
+    color: var(--terracotta);
+    white-space: nowrap;
+  }
+
+  .stepper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 1rem 0.9rem 3.2rem;
+  }
+  .stepper[hidden] {
+    display: none;
+  }
+  .stepper__label {
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    margin-right: auto;
+  }
+  .stepper__btn {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    background: var(--limestone);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .stepper__btn:hover {
+    border-color: var(--green);
+  }
+  .stepper__btn :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .stepper input {
+    width: 3.25rem;
+    height: 2.5rem;
+    text-align: center;
+    font: 600 1rem var(--sans);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    color: var(--ink);
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .stepper input::-webkit-inner-spin-button,
+  .stepper input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Summary */
+  .est__sum {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    display: grid;
+    gap: 0.75rem;
+    box-shadow: 0 20px 40px -28px rgb(30 35 32 / 0.35);
+  }
+  .est__sum-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--green);
+  }
+  .est__total {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .est__total .price {
+    font-size: clamp(2.75rem, 2.2rem + 2vw, 3.5rem);
+    line-height: 1;
+  }
+  .est__unit {
+    color: var(--ink-soft);
+  }
+  .est__month {
+    font-weight: 600;
+    color: var(--green);
+  }
+  .est__hours {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ink-soft);
+  }
+  .est__hours :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .est__lines {
+    list-style: none;
+    margin: 0;
+    padding: 0.75rem 0 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 0.3rem;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+  .est__lines:empty {
+    display: none;
+  }
+  .est__warn {
+    background: #f6e7dc;
+    color: var(--terracotta-deep);
+    font-size: 0.875rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: var(--radius-sm);
+  }
+  .est__fine {
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+  .est__send {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+  }
+  .est__send-label {
+    grid-column: 1 / -1;
+    font-weight: 600;
+  }
+  .est__send .btn {
+    padding-inline: 0.75rem;
+  }
+  @media (max-width: 359px) {
+    .est__send {
+      grid-template-columns: 1fr;
+    }
+  }
+  .est__copied {
+    grid-column: 1 / -1;
+    color: var(--green);
+  }
+
+  @media (max-width: 639px) {
+    .opts--chips {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .opt--chip .opt__body {
+      border-radius: var(--radius-sm);
+      padding: 0.7rem 0.85rem;
+    }
+  }
+  @media (min-width: 640px) {
+    .opts--cards {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 640px) and (max-width: 899px) {
+    .opts--cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 900px) {
+    .est {
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      gap: 3rem;
+    }
+    .est__mini {
+      display: none;
+    }
+    .est__sum {
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .est__fields {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .opts--cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .opts--cards {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

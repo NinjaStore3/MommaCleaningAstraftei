@@ -1,0 +1,326 @@
+---
+import Icon from '../ui/Icon.astro';
+import { site, links, hasEmail } from '../../lib/site';
+import { services } from '../../lib/pricing';
+
+const serviceOptions = (['standard', 'deep', 'move', 'airbnb', 'renovation'] as const).map((id) => ({
+  id,
+  name: services[id].name,
+}));
+const allAreas = site.areas.groups.flatMap((g) => g.items);
+---
+
+<section class="section section--sand" id="epikoinonia" aria-labelledby="contact-title">
+  <div class="wrap contact">
+    <div class="contact__intro">
+      <p class="eyebrow">Κλείσε ραντεβού</p>
+      <h2 id="contact-title">Πες μου τι χρειάζεσαι</h2>
+      <p class="lead">
+        Γράψε μου εδώ και σε παίρνω τηλέφωνο. Ή πάρε με εσύ. Αν δεν το σηκώσω, είμαι σε δουλειά· θα σε πάρω μόλις
+        τελειώσω.
+      </p>
+
+      <div class="direct">
+        <a class="direct__item" href={links.tel}>
+          <Icon name="phone" />
+          <span><span class="direct__label">Τηλέφωνο</span>{site.contact.phoneDisplay}</span>
+        </a>
+        {
+          site.contact.viber && (
+            <a class="direct__item" href={links.viber()}>
+              <Icon name="viber" />
+              <span>
+                <span class="direct__label">Viber</span>Στείλε μήνυμα
+              </span>
+            </a>
+          )
+        }
+        {
+          site.contact.whatsapp && (
+            <a class="direct__item" href={links.whatsapp()} target="_blank" rel="noopener">
+              <Icon name="whatsapp" />
+              <span>
+                <span class="direct__label">WhatsApp</span>Στείλε μήνυμα
+              </span>
+            </a>
+          )
+        }
+        {
+          hasEmail && (
+            <a class="direct__item" href={links.mail()}>
+              <Icon name="mail" />
+              <span>
+                <span class="direct__label">Email</span>
+                {site.contact.email}
+              </span>
+            </a>
+          )
+        }
+      </div>
+      <p class="contact__hours"><Icon name="clock" /> {site.contact.hours}</p>
+    </div>
+
+    <form
+      class="booking"
+      method="POST"
+      action={site.form.endpoint}
+      data-booking
+      data-services={JSON.stringify(Object.fromEntries(serviceOptions.map((o) => [o.id, o.name])))}
+      data-ready={String(!/^\[.*\]$/.test(site.form.accessKey))}
+    >
+      <input type="hidden" name="access_key" value={site.form.accessKey} />
+      <input type="hidden" name="subject" value="Νέο ραντεβού από το site" />
+      <input type="hidden" name="from_name" value={site.name} />
+      <!-- Spam trap: real people never see or tick this. -->
+      <input type="checkbox" name="botcheck" class="booking__trap" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+      <div class="field">
+        <label for="b-name">Όνομα</label>
+        <input id="b-name" name="name" type="text" autocomplete="name" required />
+      </div>
+      <div class="field">
+        <label for="b-phone">Τηλέφωνο</label>
+        <input id="b-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+      </div>
+      <div class="field">
+        <label for="b-area">Περιοχή</label>
+        <input id="b-area" name="area" type="text" list="b-areas" autocomplete="address-level3" required />
+        <datalist id="b-areas">
+          {allAreas.map((a) => <option value={a} />)}
+        </datalist>
+      </div>
+      <div class="field">
+        <label for="b-service">Τι χρειάζεσαι</label>
+        <select id="b-service" name="service">
+          {serviceOptions.map((o) => <option value={o.name}>{o.name}</option>)}
+          <option value="Δεν ξέρω ακόμα">Δεν ξέρω ακόμα</option>
+        </select>
+      </div>
+      <div class="field field--wide">
+        <label for="b-day">Ποια μέρα σε βολεύει;</label>
+        <input id="b-day" name="day" type="text" placeholder="π.χ. Τρίτη πρωί ή όποια μέρα" />
+      </div>
+      <div class="field field--wide">
+        <label for="b-msg">Κάτι άλλο που πρέπει να ξέρω; <span class="field__opt">(προαιρετικό)</span></label>
+        <textarea id="b-msg" name="message" rows="4" placeholder="Τετραγωνικά, μπάνια, κατοικίδια, ό,τι θες"></textarea>
+      </div>
+
+      <div class="booking__foot field--wide">
+        <button class="btn" type="submit" data-submit>
+          Στείλε <Icon name="arrow" />
+        </button>
+        <p class="small muted">
+          Τα στοιχεία σου τα χρησιμοποιώ μόνο για να σου απαντήσω. <a href="/politiki-aporritou/">Πολιτική απορρήτου</a>
+        </p>
+      </div>
+      <p class="booking__status field--wide" data-status role="status" hidden></p>
+    </form>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-booking]');
+  if (form) {
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const fallback =
+      'Δεν έφυγε το μήνυμα. Πάρε με τηλέφωνο ή στείλε μου στο Viber/WhatsApp, θα σου απαντήσω σίγουρα.';
+
+    const show = (text: string, kind: 'ok' | 'error') => {
+      status.textContent = text;
+      status.dataset.kind = kind;
+      status.hidden = false;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      if (form.dataset.ready !== 'true') {
+        show('Η φόρμα δεν έχει ρυθμιστεί ακόμα. ' + fallback.replace('Δεν έφυγε το μήνυμα. ', ''), 'error');
+        return;
+      }
+      submit.disabled = true;
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || data.success === false) throw new Error(data.message || res.statusText);
+        form.reset();
+        show('Το πήρα! Θα σε πάρω τηλέφωνο σύντομα.', 'ok');
+      } catch {
+        show(fallback, 'error');
+      } finally {
+        submit.disabled = false;
+      }
+    });
+
+    // Filled in from the cost estimator ("Με τη φόρμα").
+    window.addEventListener('estimate:use', (e) => {
+      const { service, summary } = (e as CustomEvent).detail ?? {};
+      const select = form.querySelector<HTMLSelectElement>('#b-service')!;
+      const names: Record<string, string> = JSON.parse(form.dataset.services || '{}');
+      if (service && names[service]) select.value = names[service];
+      const msg = form.querySelector<HTMLTextAreaElement>('#b-msg')!;
+      if (summary) msg.value = summary;
+      setTimeout(() => form.querySelector<HTMLInputElement>('#b-name')?.focus({ preventScroll: true }), 400);
+    });
+  }
+</script>
+
+<style>
+  .contact {
+    display: grid;
+    gap: 3rem;
+    align-items: start;
+  }
+  .contact__intro {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .direct {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+  .direct__item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
+    word-break: break-word;
+  }
+  .direct__item:hover {
+    border-color: var(--green);
+    color: var(--ink);
+  }
+  .direct__item :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--green);
+    flex: none;
+  }
+  .direct__label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+  .contact__hours {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+  }
+  .contact__hours :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .booking {
+    display: grid;
+    gap: 1.1rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  }
+  .booking__trap {
+    position: absolute;
+    left: -9999px;
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .field label {
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .field__opt {
+    font-weight: 400;
+    color: var(--ink-soft);
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    background: var(--limestone);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 0.9rem;
+    min-height: 3rem;
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 6rem;
+  }
+  .field select {
+    appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--ink) 50%), linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+    background-position:
+      calc(100% - 1.15rem) 55%,
+      calc(100% - 0.8rem) 55%;
+    background-size: 0.35rem 0.35rem;
+    background-repeat: no-repeat;
+    padding-right: 2.5rem;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgb(31 74 64 / 0.18);
+  }
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: #8a8f8b;
+  }
+  .booking__foot {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+  }
+  .booking__status {
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+  }
+  .booking__status[data-kind='ok'] {
+    background: var(--green-tint);
+    color: var(--green-deep);
+  }
+  .booking__status[data-kind='error'] {
+    background: #f6e7dc;
+    color: var(--terracotta-deep);
+  }
+
+  @media (min-width: 640px) {
+    .booking {
+      grid-template-columns: 1fr 1fr;
+    }
+    .field--wide {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 900px) {
+    .contact {
+      grid-template-columns: 5fr 7fr;
+      gap: 4rem;
+    }
+  }
+</style>

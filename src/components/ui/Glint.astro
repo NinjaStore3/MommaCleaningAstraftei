@@ -1,0 +1,14 @@
+---
+/** The four-point glint from the logo. Inherits color via currentColor. */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<svg class={className} viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false">
+  <path
+    fill="currentColor"
+    d="M10 0C10.3 3.6 11.4 7.7 16.2 10 11.4 12.3 10.3 16.4 10 20 9.7 16.4 8.6 12.3 3.8 10 8.6 7.7 9.7 3.6 10 0Z"
+  ></path>
+</svg>

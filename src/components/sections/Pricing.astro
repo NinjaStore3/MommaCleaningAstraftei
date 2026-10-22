@@ -1,0 +1,414 @@
+---
+import Icon from '../ui/Icon.astro';
+import {
+  euro,
+  hoursLabel,
+  listOr,
+  pct,
+  planPrice,
+  plans,
+  policies,
+  services,
+  sizes,
+  type SizeId,
+} from '../../lib/pricing';
+import { site } from '../../lib/site';
+
+const std = services.standard;
+const priced = sizes.filter((s) => typeof std.prices[s.id] === 'number');
+const unpriced = sizes.filter((s) => typeof std.prices[s.id] !== 'number');
+const maxDiscount = Math.max(...plans.map((p) => p.discount));
+const bestPlan = plans.reduce((a, b) => (b.discount > a.discount ? b : a));
+const price = (id: SizeId) => std.prices[id] as number;
+---
+
+<section class="section" id="times" aria-labelledby="pricing-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Τιμές</p>
+      <h2 id="pricing-title">Πόσο κάνει;</h2>
+      <p>Η τιμή βγαίνει από τα τετραγωνικά, όχι με την ώρα. Τα υλικά είναι μέσα στην τιμή.</p>
+    </div>
+
+    <div class="pricing">
+      <fieldset class="seg">
+        <legend class="visually-hidden">Δείξε τιμές για</legend>
+        <input type="radio" name="pricing-mode" id="pm-once" value="once" checked />
+        <label for="pm-once">Μία φορά</label>
+        <input type="radio" name="pricing-mode" id="pm-plan" value="plan" />
+        <label for="pm-plan">Μηνιαίο πρόγραμμα <span class="seg__tag">έως {pct(maxDiscount)}</span></label>
+      </fieldset>
+
+      <div class="panel panel--once">
+        <ul class="bands" role="list">
+          {
+            priced.map((s) => (
+              <li class="band">
+                <span class="band__size">{s.label}</span>
+                <span class="price band__price">{euro(price(s.id))}</span>
+                <span class="band__hours">
+                  <Icon name="clock" />
+                  {hoursLabel(std.hours[s.id] as number)}
+                </span>
+                <span class="band__plan">
+                  ή {euro(planPrice(price(s.id), bestPlan.discount))} αν έρχομαι {bestPlan.name.toLowerCase()}
+                </span>
+              </li>
+            ))
+          }
+          {
+            unpriced.map((s) => (
+              <li class="band band--ask">
+                <span class="band__size">{s.label}</span>
+                <span class="band__ask">Πες μου για το σπίτι σου και σου λέω τιμή.</span>
+                <a class="band__link" href="#epikoinonia">
+                  Ρώτα με <Icon name="arrow" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="panel panel--plan">
+        <p class="plan-intro">
+          Ίδια μέρα και ώρα, ο ίδιος άνθρωπος κάθε φορά. Χωρίς συμβόλαιο: σταματάς όποτε θες, αρκεί να μου το πεις μια
+          εβδομάδα πριν.
+        </p>
+        <ul class="plans" role="list">
+          {
+            plans.map((p) => (
+              <li class:list={['plan', p.recommended && 'plan--rec']}>
+                {p.recommended && <span class="plan__badge">Αυτό προτείνω</span>}
+                <div class="plan__head">
+                  <h3>{p.name}</h3>
+                  <span class="plan__off">{pct(p.discount)}</span>
+                </div>
+                <p class="plan__visits">
+                  {p.visitsPerMonth === 1 ? '1 επίσκεψη' : `${p.visitsPerMonth} επισκέψεις`} τον μήνα
+                </p>
+                <table class="plan__table">
+                  <caption class="visually-hidden">Τιμές για {p.name.toLowerCase()}</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Σπίτι</th>
+                      <th scope="col">Επίσκεψη</th>
+                      <th scope="col">Μήνας</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {priced.map((s) => {
+                      const v = planPrice(price(s.id), p.discount);
+                      return (
+                        <tr>
+                          <th scope="row">{s.label}</th>
+                          <td class="price">{euro(v)}</td>
+                          <td>{euro(v * p.visitsPerMonth)}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <ul class="policies" role="list">
+      <li>
+        <Icon name="spray" />
+        <span>Τα υλικά τα φέρνω εγώ. Αν θες να δουλέψω με τα δικά σου, {euro(policies.ownMaterialsDiscount)} λιγότερα.</span>
+      </li>
+      <li>
+        <Icon name="card" />
+        <span>Πληρώνεις με {listOr(site.payment)}.</span>
+      </li>
+      <li>
+        <Icon name="receipt" />
+        <span>Κόβω απόδειξη κάθε φορά.</span>
+      </li>
+      <li>
+        <Icon name="calendar" />
+        <span>Ακύρωση δωρεάν έως {policies.freeCancelHours} ώρες πριν.</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* Segmented toggle (radio buttons, works without JavaScript) */
+  .seg {
+    position: relative;
+    display: inline-flex;
+    flex-wrap: wrap;
+    border: 0;
+    margin: 0 0 2rem;
+    padding: 0.3rem;
+    gap: 0.25rem;
+    background: var(--sand);
+    border-radius: 999px;
+  }
+  .seg input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .seg label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 1.15rem;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--ink-soft);
+  }
+  .seg input:checked + label {
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 1px 3px rgb(30 35 32 / 0.12);
+  }
+  .seg input:focus-visible + label {
+    outline: 3px solid var(--terracotta);
+    outline-offset: 2px;
+  }
+  .seg__tag {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--terracotta);
+  }
+  @media (max-width: 639px) {
+    .seg {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+      border-radius: 1.25rem;
+    }
+    .seg label {
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+      text-align: center;
+      line-height: 1.25;
+      border-radius: 1rem;
+      padding-inline: 0.75rem;
+    }
+  }
+
+  .panel--plan {
+    display: none;
+  }
+  .pricing:has(#pm-plan:checked) .panel--plan {
+    display: block;
+  }
+  .pricing:has(#pm-plan:checked) .panel--once {
+    display: none;
+  }
+
+  /* One-off: size bands */
+  .bands {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .band {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 0.35rem 1rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.35rem;
+  }
+  .band__size {
+    font-weight: 600;
+  }
+  .band__price {
+    font-size: 2.5rem;
+    line-height: 1;
+    grid-row: span 2;
+    align-self: center;
+  }
+  .band__hours {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+  }
+  .band__hours :global(svg) {
+    width: 1rem;
+    height: 1rem;
+  }
+  .band__plan {
+    grid-column: 1 / -1;
+    font-size: var(--text-sm);
+    color: var(--green);
+    border-top: 1px dashed var(--line);
+    padding-top: 0.6rem;
+    margin-top: 0.4rem;
+  }
+  .band--ask {
+    background: transparent;
+    border-style: dashed;
+    grid-template-columns: 1fr;
+  }
+  .band__ask {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+  }
+  .band__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .band__link :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  /* Plans */
+  .plan-intro {
+    max-width: 40rem;
+    margin-bottom: 1.5rem;
+    color: var(--ink-soft);
+  }
+  .plans {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+  .plan {
+    position: relative;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.35rem 1.25rem;
+  }
+  .plan--rec {
+    border: 2px solid var(--green);
+  }
+  .plan__badge {
+    position: absolute;
+    top: -0.8rem;
+    left: 1.25rem;
+    background: var(--green);
+    color: var(--limestone);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.2rem 0.75rem;
+    border-radius: 999px;
+  }
+  .plan__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  .plan__off {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--terracotta);
+  }
+  .plan__visits {
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+    margin: 0.2rem 0 1rem;
+  }
+  .plan__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .plan__table th,
+  .plan__table td {
+    text-align: left;
+    padding: 0.55rem 0;
+    border-top: 1px solid var(--line);
+    font-weight: 400;
+  }
+  .plan__table thead th {
+    border-top: 0;
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+    padding-top: 0;
+  }
+  .plan__table td {
+    text-align: right;
+  }
+  .plan__table thead th:not(:first-child) {
+    text-align: right;
+  }
+  .plan__table td.price {
+    font-size: 1.375rem;
+  }
+  .plan__table td:last-child {
+    color: var(--ink-soft);
+    width: 4.5rem;
+  }
+
+  /* Policies */
+  .policies {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 1.5rem 0 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 1rem;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+  }
+  .policies li {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr;
+    gap: 0.75rem;
+    align-items: start;
+  }
+  .policies :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--green);
+  }
+
+  @media (min-width: 640px) {
+    .bands {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .policies {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .bands {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .band {
+      grid-template-columns: 1fr;
+      align-content: start;
+      padding: 1.5rem;
+    }
+    .band__price {
+      grid-row: auto;
+      font-size: 3rem;
+      margin-block: 0.5rem 0.25rem;
+    }
+    .plans {
+      grid-template-columns: repeat(3, 1fr);
+      align-items: start;
+    }
+    .policies {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

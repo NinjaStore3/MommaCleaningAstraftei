@@ -1,0 +1,323 @@
+---
+import Icon from '../ui/Icon.astro';
+import Photo from '../ui/Photo.astro';
+import { euro, fromPrice, hoursLabel, services, sizes, type SizeId } from '../../lib/pricing';
+
+const std = services.standard;
+const deep = services.deep;
+const rows = [
+  ...std.includes.map((text) => ({ text, standard: true })),
+  ...deep.extras.map((text) => ({ text, standard: false })),
+];
+const deepBands = sizes.filter((s) => typeof deep.prices[s.id as SizeId] === 'number');
+
+const others = [
+  { s: services.move, price: `από ${euro(fromPrice('move')!)}`, note: services.move.fromNote },
+  {
+    s: services.airbnb,
+    price: `από ${euro(fromPrice('airbnb')!)}`,
+    note: sizes
+      .filter((z) => typeof services.airbnb.prices[z.id as SizeId] === 'number')
+      .map(
+        (z) =>
+          `${services.airbnb.sizeHints[z.id as 's' | 'm' | 'l']}: ${euro(services.airbnb.prices[z.id as SizeId] as number)}`,
+      )
+      .join(' · '),
+  },
+  { s: services.renovation, price: services.renovation.quoteOnly, note: '' },
+];
+---
+
+<section class="section section--sand" id="ypiresies" aria-labelledby="services-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Υπηρεσίες</p>
+      <h2 id="services-title">Τι κάνω σε κάθε καθαρισμό</h2>
+      <p>
+        Ο κανονικός είναι για το σπίτι που καθαρίζεται τακτικά. Η γενική είναι για όταν θέλει να πιάσουμε και τις
+        γωνίες που δεν βλέπει κανείς.
+      </p>
+    </div>
+
+    <div class="compare-wrap">
+      <table class="compare">
+        <caption class="visually-hidden">Τι περιλαμβάνει ο κανονικός καθαρισμός και τι η γενική καθαριότητα</caption>
+        <thead>
+          <tr>
+            <th scope="col"><span class="visually-hidden">Εργασία</span></th>
+            <th scope="col">
+              <span class="compare__name">{std.short}</span>
+              <span class="compare__from">από {euro(fromPrice('standard')!)}</span>
+            </th>
+            <th scope="col">
+              <span class="compare__name">{deep.short}</span>
+              <span class="compare__from">από {euro(fromPrice('deep')!)}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            rows.map((r) => (
+              <tr class:list={[!r.standard && 'is-extra']}>
+                <th scope="row">{r.text}</th>
+                <td>
+                  {r.standard ? (
+                    <Icon name="check" label="ναι" />
+                  ) : (
+                    <span class="compare__no" role="img" aria-label="όχι">
+                      —
+                    </span>
+                  )}
+                </td>
+                <td>
+                  <Icon name="check" label="ναι" />
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+
+      <aside class="deep-card" aria-labelledby="deep-title">
+        <h3 id="deep-title">{deep.name}</h3>
+        <p class="muted">{deep.blurb}</p>
+        <dl class="deep-card__list">
+          {
+            deepBands.map((s) => (
+              <div>
+                <dt>{s.label}</dt>
+                <dd>
+                  <span class="price">{euro(deep.prices[s.id as SizeId] as number)}</span>
+                  <span class="deep-card__hours">{hoursLabel(deep.hours[s.id as SizeId] as number)}</span>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="small muted">Σε μεγάλο σπίτι μπορεί να τη χωρίσουμε σε δύο μέρες. Δουλεύω μόνη μου και δεν βιάζομαι.</p>
+      </aside>
+    </div>
+
+    <div class="others">
+      <div class="others__list">
+        <h3 class="others__title">Κι άλλες δουλειές</h3>
+        <ul role="list">
+          {
+            others.map(({ s, price, note }) => (
+              <li class="other">
+                <div class="other__head">
+                  <h4>{s.name}</h4>
+                  <span class="other__price">{price}</span>
+                </div>
+                <p>{s.blurb}</p>
+                {note && <p class="other__note">{note}</p>}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <Photo
+        name="kitchen"
+        alt="Καθαρή κουζίνα: πάγκος και εστίες"
+        caption="κουζίνα, πάγκος και εστίες που γυαλίζουν"
+        sizes="(min-width: 900px) 30vw, 100vw"
+        class="others__photo"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .compare-wrap {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+  .compare {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--paper);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .compare th,
+  .compare td {
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+    font-weight: 400;
+  }
+  .compare thead th {
+    border-top: 0;
+    vertical-align: bottom;
+    background: var(--paper);
+    padding-block: 1.1rem;
+  }
+  .compare thead th:not(:first-child),
+  .compare td {
+    width: 5.5rem;
+    text-align: center;
+  }
+  .compare__name {
+    display: block;
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.0625rem;
+  }
+  .compare__from {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--terracotta);
+    font-weight: 600;
+  }
+  .compare td :global(svg) {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin-inline: auto;
+    color: var(--green);
+  }
+  .compare__no {
+    color: var(--line);
+    font-weight: 600;
+  }
+  .compare tr.is-extra th {
+    color: var(--ink);
+  }
+  .compare tr.is-extra {
+    background: var(--green-tint);
+  }
+  .compare tr.is-extra td:last-child :global(svg) {
+    color: var(--terracotta);
+  }
+
+  .deep-card {
+    background: var(--green);
+    color: var(--limestone);
+    border-radius: var(--radius);
+    padding: 1.75rem 1.5rem;
+    display: grid;
+    gap: 1rem;
+  }
+  .deep-card .muted {
+    color: rgb(247 244 238 / 0.82);
+  }
+  .deep-card__list {
+    margin: 0;
+    display: grid;
+  }
+  .deep-card__list div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 0.7rem;
+    border-top: 1px solid rgb(247 244 238 / 0.2);
+  }
+  .deep-card__list dd {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .deep-card .price {
+    color: var(--gold);
+    font-size: 1.75rem;
+  }
+  .deep-card__hours {
+    font-size: 0.875rem;
+    color: rgb(247 244 238 / 0.75);
+    min-width: 5.5rem;
+    text-align: right;
+  }
+
+  .others {
+    margin-top: clamp(3rem, 2rem + 4vw, 5rem);
+    display: grid;
+    gap: 2rem;
+  }
+  .others__title {
+    margin-bottom: 0.5rem;
+  }
+  .others ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .other {
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    gap: 0.4rem;
+  }
+  .other__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+  }
+  .other h4 {
+    font-size: 1.1875rem;
+  }
+  .other__price {
+    font-family: var(--serif);
+    font-weight: 600;
+    color: var(--terracotta);
+    white-space: nowrap;
+  }
+  .other p {
+    color: var(--ink-soft);
+    max-width: 38rem;
+  }
+  .other__note {
+    font-size: var(--text-sm);
+  }
+  .others :global(.others__photo) {
+    aspect-ratio: 4 / 3;
+    margin: 0;
+  }
+
+  @media (max-width: 520px) {
+    .compare th,
+    .compare td {
+      padding-inline: 0.6rem;
+    }
+    .compare th:first-child {
+      padding-left: 0.9rem;
+    }
+    .compare thead th:not(:first-child),
+    .compare td {
+      width: 4.25rem;
+      padding-inline: 0.25rem;
+    }
+    .compare__name {
+      font-size: 0.875rem;
+    }
+    .compare__from {
+      font-size: 0.75rem;
+    }
+    .compare tbody th {
+      font-size: 0.9375rem;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .compare-wrap {
+      grid-template-columns: 1fr 22rem;
+      gap: 2.5rem;
+    }
+    .deep-card {
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+    }
+    .others {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .others :global(.others__photo) {
+      aspect-ratio: 4 / 5;
+    }
+  }
+</style>

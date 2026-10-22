@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileBar from '../components/MobileBar.astro';
+import Hero from '../components/sections/Hero.astro';
+import Steps from '../components/sections/Steps.astro';
+import Pricing from '../components/sections/Pricing.astro';
+import Services from '../components/sections/Services.astro';
+import Addons from '../components/sections/Addons.astro';
+import Estimator from '../components/sections/Estimator.astro';
+import About from '../components/sections/About.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
+import Areas from '../components/sections/Areas.astro';
+import Faq from '../components/sections/Faq.astro';
+import Contact from '../components/sections/Contact.astro';
+import { localBusiness, faqPage } from '../lib/schema';
+import { euro, fromPrice } from '../lib/pricing';
+
+const from = euro(fromPrice('standard')!);
+const title = `Καθαρισμός σπιτιού στην Αθήνα, από ${from} | Αστράφτει`;
+const description = `Καθαρίστρια για το σπίτι σου στην Αθήνα. Κανονικός καθαρισμός από ${from}, γενική καθαριότητα, μηνιαία προγράμματα, Airbnb. Τα υλικά τα φέρνω εγώ.`;
+---
+
+<Base title={title} description={description} path="/" jsonld={[localBusiness(), faqPage()]}>
+  <a class="skip-link" href="#main">Πήγαινε στο περιεχόμενο</a>
+  <Header />
+  <main id="main">
+    <Hero />
+    <Steps />
+    <Pricing />
+    <Services />
+    <Addons />
+    <Estimator />
+    <About />
+    <Testimonials />
+    <Areas />
+    <Faq />
+    <Contact />
+  </main>
+  <Footer />
+  <MobileBar />
+</Base>

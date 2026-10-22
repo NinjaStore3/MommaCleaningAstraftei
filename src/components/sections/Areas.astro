@@ -1,0 +1,65 @@
+---
+import { site } from '../../lib/site';
+---
+
+<section class="section section--sand" id="perioxes" aria-labelledby="areas-title">
+  <div class="wrap areas">
+    <div class="section-head">
+      <p class="eyebrow">Περιοχές</p>
+      <h2 id="areas-title">Πού έρχομαι</h2>
+      <p>Μένω {site.areas.base} και κινούμαι κυρίως εδώ γύρω.</p>
+    </div>
+    <div class="areas__groups">
+      {
+        site.areas.groups.map((g) => (
+          <div class="areas__group">
+            <h3>{g.name}</h3>
+            <ul role="list">
+              {g.items.map((a) => (
+                <li>{a}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+    <p class="areas__outside">{site.areas.outside}</p>
+  </div>
+</section>
+
+<style>
+  .areas__groups {
+    display: grid;
+    gap: 2rem;
+  }
+  .areas__group h3 {
+    font-size: 1.125rem;
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--ink);
+  }
+  .areas__group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0;
+  }
+  .areas__group li:not(:last-child)::after {
+    content: '·';
+    margin-inline: 0.55rem;
+    color: var(--terracotta);
+  }
+  .areas__outside {
+    margin-top: 2.5rem;
+    max-width: 38rem;
+    color: var(--ink-soft);
+  }
+  @media (min-width: 800px) {
+    .areas__groups {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+</style>

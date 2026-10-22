@@ -1,0 +1,99 @@
+---
+import Icon from '../ui/Icon.astro';
+import Photo from '../ui/Photo.astro';
+import { site } from '../../lib/site';
+---
+
+<section class="section" id="gia-mena" aria-labelledby="about-title">
+  <div class="wrap about">
+    <Photo
+      name="owner"
+      shape="arch"
+      alt={`Η ${site.owner.firstName}`}
+      caption={`η ${site.owner.firstName}, φυσική, όχι στημένη`}
+      sizes="(min-width: 900px) 30vw, 80vw"
+      class="about__photo"
+    />
+    <div class="about__text">
+      <p class="eyebrow">Λίγα λόγια για μένα</p>
+      <h2 id="about-title">Γεια σου, είμαι η {site.owner.firstName}.</h2>
+      <!-- Placeholder text: rewrite it in her own words (see OWNER-TODO.md). -->
+      <div class="about__body">
+        <p>
+          Καθαρίζω σπίτια από το {site.owner.since}. Δουλεύω μόνη μου, οπότε στο σπίτι σου έρχεται πάντα ο ίδιος
+          άνθρωπος: εγώ.
+        </p>
+        <p>
+          Καθαρίζω όπως θα ήθελα να καθαρίσουν το δικό μου σπίτι. Προσέχω τα πράγματά σου, δεν βιάζομαι και δεν αφήνω
+          γωνίες.
+        </p>
+        <p>Αν κάτι δεν σου αρέσει, μου το λες και το ξαναπιάνω. Τόσο απλά.</p>
+      </div>
+      <p class="about__sign">— {site.owner.firstName}</p>
+      <ul class="about__facts" role="list">
+        <li><Icon name="pin" /><span>Μένω {site.areas.base}</span></li>
+        <li><Icon name="clock" /><span>{site.contact.hours}</span></li>
+        <li><Icon name="calendar" /><span>Το πολύ δύο σπίτια τη μέρα, για να μη βιάζομαι σε κανένα.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+  .about :global(.about__photo) {
+    aspect-ratio: 4 / 5;
+    max-width: 22rem;
+    width: 100%;
+    margin: 0;
+    justify-self: center;
+  }
+  .about__text {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 36rem;
+  }
+  .about__body {
+    display: grid;
+    gap: 1rem;
+    font-size: var(--text-lg);
+  }
+  .about__sign {
+    font-family: var(--serif);
+    font-size: 1.375rem;
+    color: var(--green);
+  }
+  .about__facts {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 1.25rem 0 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 0.6rem;
+    color: var(--ink-soft);
+    font-size: 0.9375rem;
+  }
+  .about__facts li {
+    display: grid;
+    grid-template-columns: 1.25rem 1fr;
+    gap: 0.7rem;
+    align-items: start;
+  }
+  .about__facts :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--green);
+    margin-top: 0.1rem;
+  }
+
+  @media (min-width: 900px) {
+    .about {
+      grid-template-columns: 5fr 7fr;
+      gap: 5rem;
+    }
+  }
+</style>
