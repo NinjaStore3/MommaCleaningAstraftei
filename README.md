@@ -1,12 +1,12 @@
 # Αστράφτει — home cleaning, Athens
 
-Website for a one-person home cleaning business in Athens. Static site built with [Astro](https://astro.build), in Greek, hosted for free on Cloudflare Pages.
+Website for a one-person home cleaning business in Athens. Static site built with [Astro](https://astro.build), in Greek, hosted for free on Cloudflare.
 
 <img src="docs/screenshots/desktop-top.jpg" alt="Home page, desktop" width="640"> <img src="docs/screenshots/mobile-top.jpg" alt="Home page, mobile" width="195">
 
 Full-page screenshots: [desktop](docs/screenshots/desktop-full.jpg) · [mobile](docs/screenshots/mobile-full.jpg)
 
-- **Costs nothing to run.** Cloudflare Pages (hosting), Web3Forms (booking form → email) and GitHub are all free. Only the domain costs money (about €10–20/year).
+- **Costs nothing to run.** Cloudflare (hosting), Web3Forms (booking form → email) and GitHub are all free. Only the domain costs money (about €10–20/year).
 - **No database.** The site doesn't need one. Prices live in a JSON file. Bookings arrive by email, phone, Viber or WhatsApp. (Turso or Cloudflare D1 would only make sense later, for something like an online booking calendar.)
 - **No cookies**, so no cookie banner.
 
@@ -92,28 +92,28 @@ Never invent reviews.
 
 ---
 
-## Deploy (Cloudflare Pages, free)
+## Deploy (Cloudflare, free)
 
 One-time setup. After that, every push to `main` redeploys automatically.
 
-1. Merge this branch into `main` on GitHub.
-2. Go to [dash.cloudflare.com](https://dash.cloudflare.com), sign up (free), then **Workers & Pages → Create → Pages → Connect to Git**.
-   If the Create screen only offers Workers, look for the link to create a **Pages** project instead.
-3. Authorise GitHub and pick the **MommaCleaningAstraftei** repository.
-4. Build settings:
-   - Framework preset: **Astro**
+1. Go to [dash.cloudflare.com](https://dash.cloudflare.com), sign up (free), then **Workers & Pages → Create → Import a repository** (connect GitHub when asked) and pick **MommaCleaningAstraftei**.
+2. On **Set up your application**:
+   - Project name: `mommacleaningastraftei`. It must match `name` in `wrangler.jsonc`; if you pick a different name, change it there too.
    - Build command: `npm run build`
-   - Build output directory: `dist`
-   - Environment variable: `NODE_VERSION` = `22` (`.nvmrc` already says 22; this just makes it explicit)
-5. **Save and Deploy.** After a minute the site is live at `https://<project-name>.pages.dev`.
+   - Deploy command: `npx wrangler deploy` (the default)
+   - Preview builds: leave on. Pushes to other branches get their own preview URL and don't touch the live site.
+   - **Advanced settings → Build variables:** `NODE_VERSION` = `22`
+3. **Deploy.** The red "This Worker does not exist on this account" line under the name only means no Worker has that name yet; the first deploy creates it. After a minute or two the site is live at `https://mommacleaningastraftei.<your-account>.workers.dev`.
 
-The `404` page, `sitemap.xml` and `robots.txt` work out of the box.
+`wrangler.jsonc` tells Cloudflare to serve the built `dist/` folder as static files, with the custom 404 page. Static files on Workers are free and unlimited.
+
+**Prefer Cloudflare Pages?** That works too: **Create → Pages → Connect to Git**, preset **Astro**, build command `npm run build`, output directory `dist`, `NODE_VERSION=22`. Pages ignores `wrangler.jsonc`. Use one or the other, not both.
 
 ### Connect the domain
 
 1. Buy the domain (e.g. `astraftei.gr`) from any Greek registrar (papaki, Top.Host, Dnhost…).
 2. In Cloudflare: **Add a domain** (free plan). Cloudflare gives you two nameservers. At the registrar, replace the domain's nameservers with those two. This can take a few hours.
-3. In the Pages project: **Custom domains → Set up a custom domain** → `astraftei.gr`, then again for `www.astraftei.gr`. Cloudflare creates the DNS records and the HTTPS certificate.
+3. In the Worker: **Settings → Domains & Routes → Add → Custom domain** → `astraftei.gr`, then again for `www.astraftei.gr`. (On Pages: **Custom domains → Set up a custom domain**.) Cloudflare creates the DNS records and the HTTPS certificate.
 4. If the final address is different from `https://astraftei.gr`, update `url` in `src/data/site.json`. Canonical links, sitemap, social previews and the flyer's QR code all use it.
 
 ### Booking form (Web3Forms, free)
@@ -126,7 +126,7 @@ Until the key is set, the form tells visitors to call or message on Viber/WhatsA
 
 ### Analytics (optional, cookieless)
 
-In the Pages project: **Metrics → Web Analytics → Enable**. It's cookieless, so still no banner. Then set `analytics.cloudflare: true` in `site.json` so the privacy policy mentions it.
+In the Cloudflare dashboard: **Web Analytics → Add a site** (or, on Pages, **Metrics → Web Analytics → Enable**). It's cookieless, so still no banner. Then set `analytics.cloudflare: true` in `site.json` so the privacy policy mentions it.
 
 ---
 

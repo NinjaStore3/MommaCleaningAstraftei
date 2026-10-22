@@ -1,0 +1,11 @@
+// Cloudflare Workers config: serves the built site (dist/) as static files.
+// Used by the "npx wrangler deploy" step in Cloudflare's Git deploy.
+{
+  "name": "mommacleaningastraftei",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  }
+}

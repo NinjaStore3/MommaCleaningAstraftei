@@ -82,7 +82,7 @@
     "accessKey": "[WEB3FORMS_ACCESS_KEY]"
   },
   "analytics": {
-    "_note": "Βάλε cloudflare: true αν ενεργοποιήσεις το Cloudflare Web Analytics (για να το γράφει η Πολιτική απορρήτου). Το token χρειάζεται μόνο αν δεν το ενεργοποιήσεις από το Cloudflare Pages.",
+    "_note": "Βάλε cloudflare: true αν ενεργοποιήσεις το Cloudflare Web Analytics (για να το γράφει η Πολιτική απορρήτου). Το token χρειάζεται μόνο αν το Cloudflare ζητήσει να μπει κώδικας (JS snippet) στο site.",
     "cloudflare": false,
     "cloudflareToken": ""
   },
