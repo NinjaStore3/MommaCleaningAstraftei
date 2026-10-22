@@ -50,7 +50,8 @@ export function listOr(items: string[]) {
   return `${items.slice(0, -1).join(', ')} ή ${items[items.length - 1]}`;
 }
 
-export const lateCancelText = (fee: number) => (fee === 0.5 ? 'τη μισή τιμή' : `το ${Math.round(fee * 100)}% της τιμής`);
+/** "το 50% της τιμής" (same form as subject or object). */
+export const lateCancelText = (fee: number) => `το ${Math.round(fee * 100)}% της τιμής`;
 
 /** "3 με 5" — shortest to longest estimated duration of a service. */
 export function hoursSpan(id: 'standard' | 'deep') {

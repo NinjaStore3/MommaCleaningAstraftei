@@ -6,7 +6,7 @@ Website for a one-person home cleaning business in Athens. Static site built wit
 
 Full-page screenshots: [desktop](docs/screenshots/desktop-full.jpg) · [mobile](docs/screenshots/mobile-full.jpg)
 
-- **Costs nothing to run.** Cloudflare (hosting), Web3Forms (booking form → email) and GitHub are all free. Only the domain costs money (about €10–20/year).
+- **Costs nothing to run.** Cloudflare (hosting) and GitHub are free, and the booking form needs no outside service. Only the domain costs money (about €10–20/year).
 - **No database.** The site doesn't need one. Prices live in a JSON file. Bookings arrive by email, phone, Viber or WhatsApp. (Turso or Cloudflare D1 would only make sense later, for something like an online booking calendar.)
 - **No cookies**, so no cookie banner.
 
@@ -64,11 +64,11 @@ Each section of the home page is one file in `src/components/sections/`, in page
 
 The Greek copy is plain text inside the HTML, so edit it directly. The FAQ is in `src/data/faq.json`. Tokens like `{freeCancelHours}` are filled in from the price file, so the FAQ never contradicts the price list. Legal pages: `src/pages/oroi.astro` (terms) and `src/pages/politiki-aporritou.astro` (privacy).
 
-Copy style: first person singular (it's one woman, that's the selling point), everyday Athenian Greek, short sentences, `45€` with no space.
+Copy style: she speaks in the first person (it's one professional, always the same person), and addresses visitors politely in the plural (εσείς). Clear, professional Greek, short sentences, `45€` with no space. See BRAND.md → Voice.
 
 ## Add photos
 
-Until real photos exist, the site shows tinted placeholders with a caption saying what goes there. To add a photo, drop a JPG/PNG into **`src/assets/photos/`** with one of these names:
+Until real photos exist, each slot shows a branded panel (the green arch with "από το 1989", the "37 χρόνια εμπειρίας" panel, a contact card), so the site looks finished. To add a photo, drop a JPG/PNG into **`src/assets/photos/`** with one of these names. The photo then replaces the panel:
 
 | File name    | Where                                   | Shape                  |
 | ------------ | --------------------------------------- | ---------------------- |
@@ -76,7 +76,7 @@ Until real photos exist, the site shows tinted placeholders with a caption sayin
 | `owner.jpg`  | "Λίγα λόγια για μένα" (her, natural)    | portrait 4:5, arch top |
 | `kitchen.jpg`| Services section (clean kitchen)        | 4:3 / 4:5              |
 
-At least 1200 px wide. Astro converts them to AVIF/WebP at several sizes automatically. Use real photos of her work, taken by phone in daylight. No stock photos.
+At least 1200 px wide. Astro converts them to AVIF/WebP at several sizes automatically. Use real photos of her and of homes she has cleaned (with the client's permission), taken by phone in daylight. No stock or AI-generated photos presented as her work.
 
 ## Reviews
 
@@ -116,13 +116,11 @@ One-time setup. After that, every push to `main` redeploys automatically.
 3. In the Worker: **Settings → Domains & Routes → Add → Custom domain** → `astraftei.gr`, then again for `www.astraftei.gr`. (On Pages: **Custom domains → Set up a custom domain**.) Cloudflare creates the DNS records and the HTTPS certificate.
 4. If the final address is different from `https://astraftei.gr`, update `url` in `src/data/site.json`. Canonical links, sitemap, social previews and the flyer's QR code all use it.
 
-### Booking form (Web3Forms, free)
+### Booking form
 
-1. Go to [web3forms.com](https://web3forms.com), enter the email address where bookings should arrive, and confirm. You get an **Access Key**.
-2. Paste it into `src/data/site.json` → `form.accessKey`.
-3. Push. Submissions arrive by email (free plan: 250 per month).
+There's no server and no form service. When a visitor fills in the form and presses **WhatsApp**, **Viber** or **Email**, the site opens that app with a ready-made message (name, phone, area, service, day, notes) to `contact.phone` / `contact.email`. They press send there. Nothing is stored on the site, and there's no key to set up.
 
-Until the key is set, the form tells visitors to call or message on Viber/WhatsApp instead, so nothing gets lost.
+The cost calculator works the same way. Its "Στη φόρμα" button copies the estimate into the booking form.
 
 ### Analytics (optional, cookieless)
 

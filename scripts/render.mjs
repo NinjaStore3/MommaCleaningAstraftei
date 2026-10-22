@@ -134,7 +134,7 @@ async function brand() {
     doc(
       css,
       `<div style="position:absolute;left:72px;top:64px;width:330px">${wordmark}</div>
-       <div class="h" style="position:absolute;left:72px;top:210px;font-size:74px;width:640px">Γυρνάς σπίτι<br>και <em>αστράφτει.</em></div>
+       <div class="h" style="position:absolute;left:72px;top:210px;font-size:74px;width:640px">Γυρνάτε σπίτι<br>και <em>αστράφτει.</em></div>
        <div style="position:absolute;left:72px;bottom:70px;font-size:28px;color:#525a55">Καθαρισμός σπιτιού στην Αθήνα, <span class="p" style="font-size:40px">από ${from}€</span></div>
        <div class="arch" style="right:80px;bottom:0;width:300px;height:470px">${glint}</div>`,
     ),

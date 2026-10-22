@@ -9,16 +9,17 @@ const first = sizes[0];
 const startPrice = services.standard.prices[first.id as 's'];
 const startHours = services.standard.hours[first.id as 's'];
 const recommended = plans.find((p) => p.recommended) ?? plans[0];
+const years = new Date().getFullYear() - site.owner.since;
 ---
 
 <section class="hero" id="top">
   <div class="wrap hero__grid">
     <div class="hero__text">
       <p class="eyebrow">Καθαρισμός σπιτιού · Αθήνα</p>
-      <h1>Γυρνάς σπίτι και <span class="hero__shine">αστράφτει<Glint class="hero__glint" /></span>.</h1>
+      <h1>Γυρνάτε σπίτι και <span class="hero__shine">αστράφτει<Glint class="hero__glint" /></span>.</h1>
       <p class="lead hero__lead">
-        Είμαι η {site.owner.firstName} και καθαρίζω σπίτια. Φέρνω τα δικά μου υλικά και έρχομαι πάντα εγώ, όχι
-        συνεργείο.
+        Είμαι η {site.owner.firstName} και καθαρίζω σπίτια στην Αθήνα από το {site.owner.since}. Στο σπίτι σας έρχομαι
+        πάντα εγώ, με δικά μου υλικά.
       </p>
 
       <div class="hero__price">
@@ -28,14 +29,14 @@ const recommended = plans.find((p) => p.recommended) ?? plans[0];
       </div>
 
       <div class="hero__ctas">
-        <a class="btn" href="#epikoinonia">Κλείσε ραντεβού</a>
-        <a class="btn btn--ghost" href="#ypologismos">Υπολόγισε το κόστος</a>
+        <a class="btn" href="#epikoinonia">Κλείστε ραντεβού</a>
+        <a class="btn btn--ghost" href="#ypologismos">Υπολογίστε το κόστος</a>
       </div>
 
       <ul class="checks hero__facts">
-        <li><Icon name="check" />Απόδειξη κάθε φορά</li>
-        <li><Icon name="check" />Ακύρωση δωρεάν έως {policies.freeCancelHours} ώρες πριν</li>
-        <li><Icon name="check" />Μηνιαίο πρόγραμμα χωρίς συμβόλαιο</li>
+        <li><Icon name="check" />{years} χρόνια εμπειρίας</li>
+        <li><Icon name="check" />Απόδειξη σε κάθε επίσκεψη</li>
+        <li><Icon name="check" />Δωρεάν ακύρωση έως {policies.freeCancelHours} ώρες πριν</li>
       </ul>
     </div>
 
@@ -44,11 +45,16 @@ const recommended = plans.find((p) => p.recommended) ?? plans[0];
         name="hero"
         shape="arch"
         alt="Φωτεινό σαλόνι μετά τον καθαρισμό"
-        caption="σαλόνι μετά τον καθαρισμό"
         sizes="(min-width: 900px) 38vw, 90vw"
         loading="eager"
         class="hero__photo"
-      />
+      >
+        <div slot="fallback" class="photo-panel hero__panel">
+          <Glint />
+          <p class="hero__panel-since">από το {site.owner.since}</p>
+          <p class="hero__panel-tag">καθαρισμός σπιτιού · Αθήνα</p>
+        </div>
+      </Photo>
       <a class="hero__note" href="#times">
         <span class="hero__note-label">{recommended.name}</span>
         <span><strong class="price">{euro(planPrice(startPrice, recommended.discount))}</strong> η επίσκεψη</span>
@@ -138,6 +144,27 @@ const recommended = plans.find((p) => p.recommended) ?? plans[0];
     aspect-ratio: 4 / 5;
     margin: 0;
   }
+  .hero__panel {
+    gap: 1rem;
+  }
+  .hero__panel :global(svg) {
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+  .hero__panel-since {
+    font-family: var(--serif);
+    font-weight: 560;
+    font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .hero__panel-tag {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
   .hero__note {
     position: absolute;
     right: -0.75rem;
@@ -167,7 +194,7 @@ const recommended = plans.find((p) => p.recommended) ?? plans[0];
 
   @media (max-width: 899px) {
     .hero__visual {
-      max-width: 20rem;
+      max-width: 17rem;
     }
   }
 

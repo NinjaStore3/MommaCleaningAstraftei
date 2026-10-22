@@ -366,34 +366,34 @@ a:hover {
   height: 100%;
   object-fit: cover;
 }
-.photo-placeholder {
+.photo-panel {
   position: absolute;
   inset: 0;
   display: grid;
-  place-items: end start;
-  padding: 1.25rem;
-  /* fine diagonal hatching, like light through shutters */
-  background:
-    repeating-linear-gradient(135deg, rgb(31 74 64 / 0.06) 0 1px, transparent 1px 14px),
-    linear-gradient(180deg, #e8efe9 0%, #d9e5dd 100%);
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: var(--limestone);
+  background-color: var(--green);
+  background-image: repeating-linear-gradient(135deg, rgb(247 244 238 / 0.05) 0 1px, transparent 1px 16px);
+}
+.photo-panel--light {
   color: var(--green);
+  background-color: var(--green-tint);
+  background-image: repeating-linear-gradient(135deg, rgb(31 74 64 / 0.07) 0 1px, transparent 1px 16px);
 }
-.photo-placeholder figcaption,
-.photo-placeholder span {
-  font-family: var(--serif);
-  font-size: 0.9375rem;
-  line-height: 1.35;
-  max-width: 16rem;
-  display: flex;
-  gap: 0.5rem;
-  align-items: flex-start;
+.photo-panel .photo-panel__glint,
+.photo-panel > svg {
+  width: 3.5rem;
+  height: 3.5rem;
+  color: var(--gold);
 }
-.photo-placeholder svg {
-  width: 1.1rem;
-  height: 1.1rem;
-  flex: none;
-  margin-top: 0.15rem;
+.photo-panel--light > svg {
+  color: var(--terracotta);
 }
+
 .section--rule {
   border-top: 1px solid var(--line);
 }

@@ -22,5 +22,5 @@ if (!found.length && !extra.length) {
 } else {
   console.log('Συμπλήρωσε στο src/data/site.json:\n');
   console.log([...found, ...extra].join('\n'));
-  console.log('\nΚαι ακόμα: φωτογραφίες (src/assets/photos/), κείμενο «Λίγα λόγια για μένα» (src/components/sections/About.astro). Δες OWNER-TODO.md.');
+  console.log('\nΚαι ακόμα: φωτογραφίες (src/assets/photos/). Δες OWNER-TODO.md.');
 }

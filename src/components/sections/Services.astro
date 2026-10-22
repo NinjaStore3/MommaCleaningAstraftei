@@ -1,6 +1,7 @@
 ---
 import Icon from '../ui/Icon.astro';
 import Photo from '../ui/Photo.astro';
+import Glint from '../ui/Glint.astro';
 import { euro, fromPrice, hoursLabel, services, sizes, type SizeId } from '../../lib/pricing';
 
 const std = services.standard;
@@ -32,10 +33,10 @@ const others = [
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Υπηρεσίες</p>
-      <h2 id="services-title">Τι κάνω σε κάθε καθαρισμό</h2>
+      <h2 id="services-title">Τι περιλαμβάνει κάθε καθαρισμός</h2>
       <p>
-        Ο κανονικός είναι για το σπίτι που καθαρίζεται τακτικά. Η γενική είναι για όταν θέλει να πιάσουμε και τις
-        γωνίες που δεν βλέπει κανείς.
+        Ο κανονικός καθαρισμός είναι για σπίτια που καθαρίζονται τακτικά. Η γενική καθαριότητα φτάνει και στα σημεία
+        που δεν φαίνονται.
       </p>
     </div>
 
@@ -94,13 +95,13 @@ const others = [
             ))
           }
         </dl>
-        <p class="small muted">Σε μεγάλο σπίτι μπορεί να τη χωρίσουμε σε δύο μέρες. Δουλεύω μόνη μου και δεν βιάζομαι.</p>
+        <p class="small muted">Σε μεγάλα σπίτια η γενική καθαριότητα μπορεί να μοιραστεί σε δύο επισκέψεις, για καλύτερο αποτέλεσμα.</p>
       </aside>
     </div>
 
     <div class="others">
       <div class="others__list">
-        <h3 class="others__title">Κι άλλες δουλειές</h3>
+        <h3 class="others__title">Άλλες υπηρεσίες</h3>
         <ul role="list">
           {
             others.map(({ s, price, note }) => (
@@ -119,10 +120,16 @@ const others = [
       <Photo
         name="kitchen"
         alt="Καθαρή κουζίνα: πάγκος και εστίες"
-        caption="κουζίνα, πάγκος και εστίες που γυαλίζουν"
         sizes="(min-width: 900px) 30vw, 100vw"
         class="others__photo"
-      />
+      >
+        <div slot="fallback" class="photo-panel others__panel">
+          <Glint />
+          <p class="others__panel-title">Δεν είστε σίγουροι τι χρειάζεστε;</p>
+          <p class="others__panel-text">Περιγράψτε μου το σπίτι σας και σας προτείνω τον σωστό καθαρισμό, με τιμή πριν ξεκινήσω.</p>
+          <a class="btn others__panel-btn" href="#epikoinonia">Επικοινωνία</a>
+        </div>
+      </Photo>
     </div>
   </div>
 </section>
@@ -276,6 +283,29 @@ const others = [
   .others :global(.others__photo) {
     aspect-ratio: 4 / 3;
     margin: 0;
+  }
+  .others__panel {
+    gap: 1rem;
+    padding: 2rem;
+  }
+  .others__panel-title {
+    font-family: var(--serif);
+    font-weight: 560;
+    font-size: 1.625rem;
+    line-height: 1.15;
+    max-width: 18rem;
+  }
+  .others__panel-text {
+    max-width: 22rem;
+    opacity: 0.85;
+  }
+  .others__panel-btn {
+    margin-top: 0.5rem;
+  }
+  @media (max-width: 520px) {
+    .others :global(.others__photo) {
+      aspect-ratio: 4 / 5;
+    }
   }
 
   @media (max-width: 520px) {
