@@ -65,7 +65,6 @@ export function localBusiness() {
   };
   if (filled(site.contact.email)) data.email = site.contact.email;
   if (filled(site.business.afm)) data.vatID = site.business.afm;
-  if (filled(site.business.legalName)) data.legalName = site.business.legalName;
   const sameAs = Object.values(site.socials).filter((u) => filled(u));
   if (sameAs.length) data.sameAs = sameAs;
   return data;

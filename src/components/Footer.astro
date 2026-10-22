@@ -1,6 +1,6 @@
 ---
 import Icon from './ui/Icon.astro';
-import { site, links, filled, hasEmail, ownerName } from '../lib/site';
+import { site, links, filled, hasEmail } from '../lib/site';
 
 const b = site.business;
 const socials = [
@@ -42,7 +42,7 @@ const year = new Date().getFullYear();
     <div class="site-footer__col">
       <h2 class="site-footer__h">Στοιχεία επιχείρησης</h2>
       <ul role="list">
-        <li>{ownerName}</li>
+        <li>{site.name}</li>
         <li>Οικιακός καθαρισμός, Αθήνα</li>
         <li>ΑΦΜ {b.afm} · ΔΟΥ {b.doy}</li>
         <li>{b.address}</li>

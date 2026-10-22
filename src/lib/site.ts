@@ -23,6 +23,3 @@ export const links = {
 };
 
 export const hasEmail = filled(site.contact.email);
-
-/** Name shown as the business owner: full legal name once filled in, first name until then. */
-export const ownerName = filled(site.business.legalName) ? site.business.legalName : site.owner.firstName;
